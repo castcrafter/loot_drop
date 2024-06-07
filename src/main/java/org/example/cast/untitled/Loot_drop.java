@@ -26,6 +26,7 @@ public final class Loot_drop extends JavaPlugin implements TabExecutor, Listener
 
     private List<ItemStack> lootContents = new ArrayList<>();
     private ArmorStand lootArmorStand;
+    private int particleTaskId;
 
     @Override
     public void onEnable() {
@@ -113,10 +114,10 @@ public final class Loot_drop extends JavaPlugin implements TabExecutor, Listener
         lootArmorStand.getEquipment().setHelmet(heartOfTheSea);
 
         // Schedule a task to update the velocity and spawn particles every tick
-        Bukkit.getScheduler().runTaskTimer(this, () -> {
+        particleTaskId = Bukkit.getScheduler().runTaskTimer(this, () -> {
             lootArmorStand.setVelocity(new Vector(0, -0.03, 0));
             lootArmorStand.getWorld().spawnParticle(Particle.CAMPFIRE_SIGNAL_SMOKE, lootArmorStand.getLocation().add(0, 6, 0), 1, 0.3, 0, 0.3, 0);
-        }, 0L, 1L);
+        }, 0L, 1L).getTaskId();
 
         // Send title and subtitle to all online players
         String title = "Loot Drop";
@@ -142,6 +143,7 @@ public final class Loot_drop extends JavaPlugin implements TabExecutor, Listener
                         location.getWorld().dropItem(location, item);
                     }
                 }
+                Bukkit.getScheduler().cancelTask(particleTaskId);
                 armorStand.remove();
 
                 player.playSound(player.getLocation(), Sound.ENTITY_ZOMBIE_BREAK_WOODEN_DOOR, 0.5f, 0.1f);
