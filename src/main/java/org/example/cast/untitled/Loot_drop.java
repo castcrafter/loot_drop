@@ -13,6 +13,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.util.Vector;
 
@@ -97,12 +98,19 @@ public final class Loot_drop extends JavaPlugin implements TabExecutor, Listener
         Location playerLocation = player.getLocation();
         Location lootLocation = playerLocation.clone().add(0, yOffset, 0);
 
+        ItemStack heartOfTheSea = new ItemStack(Material.HEART_OF_THE_SEA);
+        ItemMeta meta = heartOfTheSea.getItemMeta();
+        if (meta != null) {
+            meta.setCustomModelData(1);
+            heartOfTheSea.setItemMeta(meta);
+        }
+
         lootArmorStand = lootLocation.getWorld().spawn(lootLocation, ArmorStand.class);
         lootArmorStand.setInvisible(true);
         lootArmorStand.setDisabledSlots(HEAD,CHEST,FEET,HAND,OFF_HAND,LEGS);
         lootArmorStand.setCustomName("LootDrop");
         lootArmorStand.setCustomNameVisible(false);
-        lootArmorStand.getEquipment().setHelmet(new ItemStack(Material.HEART_OF_THE_SEA));
+        lootArmorStand.getEquipment().setHelmet(heartOfTheSea);
 
         // Schedule a task to update the velocity and spawn particles every tick
         Bukkit.getScheduler().runTaskTimer(this, () -> {
