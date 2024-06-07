@@ -7,7 +7,9 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabExecutor;
 import org.bukkit.entity.ArmorStand;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
+import org.bukkit.entity.TNTPrimed;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
@@ -19,18 +21,22 @@ import org.bukkit.util.Vector;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import static org.bukkit.inventory.EquipmentSlot.*;
 
 public final class Loot_drop extends JavaPlugin implements TabExecutor, Listener {
 
-    private List<ItemStack> lootContents = new ArrayList<>();
+    private List<ItemStack> goodLootContents = new ArrayList<>();
+    private List<ItemStack> badLootContents = new ArrayList<>();
     private ArmorStand lootArmorStand;
     private int particleTaskId;
+    private double goodProbability;
+    private double badProbability;
+    private UUID lootArmorStandUUID;
 
     @Override
     public void onEnable() {
-        // Plugin startup logic
         this.getCommand("copyloot").setExecutor(this);
         this.getCommand("summonloot").setExecutor(this);
         getServer().getPluginManager().registerEvents(this, this);
@@ -38,7 +44,6 @@ public final class Loot_drop extends JavaPlugin implements TabExecutor, Listener
 
     @Override
     public void onDisable() {
-        // Plugin shutdown logic
     }
 
     @Override
@@ -50,10 +55,21 @@ public final class Loot_drop extends JavaPlugin implements TabExecutor, Listener
 
         Player player = (Player) sender;
         if (label.equalsIgnoreCase("copyloot")) {
-            return copyLoot(player);
-        } else if (label.equalsIgnoreCase("summonloot")) {
             if (args.length < 1) {
-                player.sendMessage("Please specify the y offset.");
+                player.sendMessage("Please specify the loot type (good or bad).");
+                return true;
+            }
+
+            String lootType = args[0].toLowerCase();
+            if (!lootType.equals("good") && !lootType.equals("bad")) {
+                player.sendMessage("Invalid loot type. Please enter 'good' or 'bad'.");
+                return true;
+            }
+
+            return copyLoot(player, lootType);
+        } else if (label.equalsIgnoreCase("summonloot")) {
+            if (args.length < 3) {
+                player.sendMessage("Please specify the y offset and the probabilities.");
                 return true;
             }
 
@@ -65,13 +81,22 @@ public final class Loot_drop extends JavaPlugin implements TabExecutor, Listener
                 return true;
             }
 
-            return summonLoot(player, yOffset);
+            double goodProbability, badProbability;
+            try {
+                goodProbability = Double.parseDouble(args[1]);
+                badProbability = Double.parseDouble(args[2]);
+            } catch (NumberFormatException e) {
+                player.sendMessage("Invalid probabilities. Please enter numbers.");
+                return true;
+            }
+
+            return summonLoot(player, yOffset, goodProbability, badProbability);
         }
         return false;
     }
 
-    private boolean copyLoot(Player player) {
-        Block targetBlock = player.getTargetBlockExact(5);  // Looking for block within 5 blocks range
+    private boolean copyLoot(Player player, String lootType) {
+        Block targetBlock = player.getTargetBlockExact(5);
         if (targetBlock == null || targetBlock.getType() != Material.CHEST) {
             player.sendMessage("You must be looking at a chest.");
             return true;
@@ -79,6 +104,7 @@ public final class Loot_drop extends JavaPlugin implements TabExecutor, Listener
 
         Chest chest = (Chest) targetBlock.getState();
         Inventory chestInventory = chest.getInventory();
+        List<ItemStack> lootContents = lootType.equals("good") ? goodLootContents : badLootContents;
         lootContents.clear();
         for (ItemStack item : chestInventory.getContents()) {
             if (item != null) {
@@ -86,14 +112,24 @@ public final class Loot_drop extends JavaPlugin implements TabExecutor, Listener
             }
         }
 
-        player.sendMessage("Loot copied from the chest.");
+        player.sendMessage("Loot copied from the chest to the " + lootType + " loot table.");
         return true;
     }
 
-    private boolean summonLoot(Player player, int yOffset) {
-        if (lootContents.isEmpty()) {
-            player.sendMessage("No loot to drop. Copy loot from a chest first.");
+    private boolean summonLoot(Player player, int yOffset, double goodProbability, double badProbability) {
+        this.goodProbability = goodProbability;
+        this.badProbability = badProbability;
+        if (goodProbability + badProbability != 1.0) {
+            player.sendMessage("Invalid probabilities. They should add up to 1.0.");
             return true;
+        }
+
+        List<ItemStack> lootContents;
+        double random = Math.random();
+        if (random < goodProbability) {
+            lootContents = goodLootContents;
+        } else {
+            lootContents = badLootContents;
         }
 
         Location playerLocation = player.getLocation();
@@ -107,19 +143,16 @@ public final class Loot_drop extends JavaPlugin implements TabExecutor, Listener
         }
 
         lootArmorStand = lootLocation.getWorld().spawn(lootLocation, ArmorStand.class);
+        lootArmorStandUUID = lootArmorStand.getUniqueId();
         lootArmorStand.setInvisible(true);
         lootArmorStand.setDisabledSlots(HEAD,CHEST,FEET,HAND,OFF_HAND,LEGS);
-        lootArmorStand.setCustomName("LootDrop");
-        lootArmorStand.setCustomNameVisible(false);
         lootArmorStand.getEquipment().setHelmet(heartOfTheSea);
 
-        // Schedule a task to update the velocity and spawn particles every tick
         particleTaskId = Bukkit.getScheduler().runTaskTimer(this, () -> {
             lootArmorStand.setVelocity(new Vector(0, -0.03, 0));
             lootArmorStand.getWorld().spawnParticle(Particle.CAMPFIRE_SIGNAL_SMOKE, lootArmorStand.getLocation().add(0, 6, 0), 1, 0.3, 0, 0.3, 0);
         }, 0L, 1L).getTaskId();
 
-        // Send title and subtitle to all online players
         String title = "Loot Drop";
         String subtitle = "Location: " + lootLocation.getBlockX() + ", " + lootLocation.getBlockY() + ", " + lootLocation.getBlockZ();
         for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
@@ -129,18 +162,42 @@ public final class Loot_drop extends JavaPlugin implements TabExecutor, Listener
         return true;
     }
 
-
-
     @EventHandler
     public void onArmorStandDamage(EntityDamageByEntityEvent event) {
-        if (event.getEntity() instanceof ArmorStand && event.getEntity().getCustomName() != null && event.getEntity().getCustomName().equals("LootDrop")) {
+        if (event.getEntity().getUniqueId().equals(lootArmorStandUUID)) {
             if (event.getDamager() instanceof Player) {
                 Player player = (Player) event.getDamager();
                 ArmorStand armorStand = (ArmorStand) event.getEntity();
                 Location location = armorStand.getLocation();
+                List<ItemStack> lootContents;
+                double random = Math.random();
+                if (random < this.goodProbability) {
+                    lootContents = goodLootContents;
+                } else {
+                    lootContents = badLootContents;
+                }
                 for (ItemStack item : lootContents) {
                     if (item != null) {
-                        location.getWorld().dropItem(location, item);
+                        if (item.getType() == Material.TNT) {
+                            for (int i = 0; i < item.getAmount(); i++) {
+                                location.getWorld().spawn(location, TNTPrimed.class).setFuseTicks(1);
+                            }
+                        } else if (item.getType().name().endsWith("_SPAWN_EGG")) {
+                            EntityType entityType = EntityType.valueOf(item.getType().name().replace("_SPAWN_EGG", ""));
+                            for (int i = 0; i < item.getAmount(); i++) {
+                                location.getWorld().spawnEntity(location, entityType);
+                            }
+                        } else if (item.getType() == Material.BARRIER) {
+                            for (int x = -2; x <= 2; x++) {
+                                for (int y = -5; y <= 5; y++) {
+                                    for (int z = -2; z <= 2; z++) {
+                                        location.clone().add(x, y, z).getBlock().setType(Material.AIR);
+                                    }
+                                }
+                            }
+                        } else {
+                            location.getWorld().dropItemNaturally(location, item);
+                        }
                     }
                 }
                 Bukkit.getScheduler().cancelTask(particleTaskId);
