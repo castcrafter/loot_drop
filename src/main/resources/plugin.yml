@@ -1,0 +1,11 @@
+name: loot_drop
+version: '${project.version}'
+main: org.example.cast.untitled.Loot_drop
+api-version: '1.20'
+commands:
+  copyloot:
+    description: Copies the contents of the chest you are looking at.
+    usage: /copyloot
+  summonloot:
+    description: Summons the loot drop at your position.
+    usage: /summonloot
