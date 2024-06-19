@@ -6,13 +6,11 @@ import org.bukkit.block.Chest;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabExecutor;
-import org.bukkit.entity.ArmorStand;
-import org.bukkit.entity.EntityType;
-import org.bukkit.entity.Player;
-import org.bukkit.entity.TNTPrimed;
+import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -39,6 +37,7 @@ public final class Loot_drop extends JavaPlugin implements TabExecutor, Listener
     public void onEnable() {
         this.getCommand("copyloot").setExecutor(this);
         this.getCommand("summonloot").setExecutor(this);
+        this.getCommand("seamine").setExecutor(this);
         getServer().getPluginManager().registerEvents(this, this);
     }
 
@@ -91,6 +90,13 @@ public final class Loot_drop extends JavaPlugin implements TabExecutor, Listener
             }
 
             return summonLoot(player, yOffset, goodProbability, badProbability);
+        }
+        else if (label.equalsIgnoreCase("seamine")) {
+            if (!(sender instanceof Player)) {
+                sender.sendMessage("This command can only be used by players.");
+                return true;
+            }
+            return summonMine(player);
         }
         return false;
     }
@@ -207,4 +213,59 @@ public final class Loot_drop extends JavaPlugin implements TabExecutor, Listener
             }
         }
     }
+
+    private boolean summonMine(Player player) {
+        Location playerLocation = player.getLocation();
+        // Round the coordinates to the nearest block
+        double x = Math.floor(playerLocation.getX()) + 0.5;
+        double y = Math.floor(playerLocation.getY());
+        double z = Math.floor(playerLocation.getZ()) + 0.5;
+        Location roundedLocation = new Location(playerLocation.getWorld(), x, y, z);
+
+        ItemStack heartOfTheSea = new ItemStack(Material.HEART_OF_THE_SEA);
+        ItemMeta meta = heartOfTheSea.getItemMeta();
+        if (meta != null) {
+            meta.setCustomModelData(2);
+            heartOfTheSea.setItemMeta(meta);
+        }
+
+        ArmorStand armorStand = roundedLocation.getWorld().spawn(roundedLocation, ArmorStand.class);
+        armorStand.setInvisible(true);
+        armorStand.setGravity(false);
+        armorStand.addScoreboardTag("seamine");
+        armorStand.setDisabledSlots(HEAD,CHEST,FEET,HAND,OFF_HAND,LEGS);
+        armorStand.getEquipment().setHelmet(heartOfTheSea);
+
+        // Create chains from the armor stand down to the first solid block
+        Location chainLocation = armorStand.getLocation().clone();
+        chainLocation.setX(Math.floor(chainLocation.getX()));
+        chainLocation.setZ(Math.floor(chainLocation.getZ()));
+        while (!chainLocation.getBlock().getType().isSolid()) {
+            chainLocation.getBlock().setType(Material.CHAIN);
+            chainLocation.subtract(0, 1, 0);
+        }
+
+        return true;
+    }
+
+    @EventHandler
+    public void onPlayerApproachMine(PlayerMoveEvent event) {
+        Player player = event.getPlayer();
+        if (player.getGameMode() == GameMode.SURVIVAL) {
+            double range = 5.0; // Set the range as per your requirement
+            for (Entity entity : player.getNearbyEntities(range, range, range)) {
+                if (entity instanceof ArmorStand) {
+                    ArmorStand armorStand = (ArmorStand) entity;
+                    if (armorStand.getScoreboardTags().contains("seamine")) {
+                        for (int i = 0; i < 10; i++) {
+                            armorStand.getWorld().spawn(armorStand.getLocation(), TNTPrimed.class).setFuseTicks(2);
+                        }
+                        armorStand.remove();
+                        break;
+                    }
+                }
+            }
+        }
+    }
+
 }
