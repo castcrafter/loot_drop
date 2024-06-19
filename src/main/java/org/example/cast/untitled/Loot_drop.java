@@ -1,5 +1,17 @@
 package org.example.cast.untitled;
 
+import com.sk89q.worldedit.EditSession;
+import com.sk89q.worldedit.WorldEdit;
+import com.sk89q.worldedit.WorldEditException;
+import com.sk89q.worldedit.bukkit.BukkitWorld;
+import com.sk89q.worldedit.extent.clipboard.Clipboard;
+import com.sk89q.worldedit.extent.clipboard.io.ClipboardFormat;
+import com.sk89q.worldedit.extent.clipboard.io.ClipboardFormats;
+import com.sk89q.worldedit.extent.clipboard.io.ClipboardReader;
+import com.sk89q.worldedit.function.operation.Operation;
+import com.sk89q.worldedit.function.operation.Operations;
+import com.sk89q.worldedit.math.BlockVector3;
+import com.sk89q.worldedit.session.ClipboardHolder;
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.Chest;
@@ -17,8 +29,12 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.util.Vector;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 
 import static org.bukkit.inventory.EquipmentSlot.*;
@@ -35,10 +51,13 @@ public final class Loot_drop extends JavaPlugin implements TabExecutor, Listener
 
     @Override
     public void onEnable() {
-        this.getCommand("copyloot").setExecutor(this);
-        this.getCommand("summonloot").setExecutor(this);
-        this.getCommand("seamine").setExecutor(this);
+        Objects.requireNonNull(this.getCommand("copyloot")).setExecutor(this);
+        Objects.requireNonNull(this.getCommand("summonloot")).setExecutor(this);
+        Objects.requireNonNull(this.getCommand("seamine")).setExecutor(this);
         getServer().getPluginManager().registerEvents(this, this);
+        event_join eventJoinInstance = new event_join();
+        getCommand("event").setExecutor(eventJoinInstance);
+        getCommand("join").setExecutor((sender, command, label, args) -> eventJoinInstance.joinCommand(sender));
     }
 
     @Override
@@ -92,15 +111,89 @@ public final class Loot_drop extends JavaPlugin implements TabExecutor, Listener
             return summonLoot(player, yOffset, goodProbability, badProbability);
         }
         else if (label.equalsIgnoreCase("seamine")) {
-            if (!(sender instanceof Player)) {
-                sender.sendMessage("This command can only be used by players.");
-                return true;
-            }
-            return summonMine(player);
+            return summonMine((Location) player.getLocation());
         }
+//        else if (label.equalsIgnoreCase("sealoot")) {
+//            if (!(sender instanceof Player)) {
+//                sender.sendMessage("This command can only be used by players.");
+//                return true;
+//            }
+//
+//            int numMines = 0;
+//            if (args.length > 0) {
+//                try {
+//                    numMines = Integer.parseInt(args[0]);
+//                } catch (NumberFormatException e) {
+//                    player.sendMessage(ChatColor.RED + "Invalid number of mines. Please enter a number.");
+//                    return true;
+//                }
+//            }
+//
+//            return placeSeaLoot(player, numMines);
+//        }
         return false;
     }
 
+//    private boolean placeSeaLoot(Player player, int numMines) {
+//        Location playerLocation = player.getLocation();
+//        World world = playerLocation.getWorld();
+//
+//        // Find the top of the water
+//        int y = world.getHighestBlockYAt(playerLocation);
+//        while (world.getBlockAt(playerLocation.getBlockX(), y, playerLocation.getBlockZ()).getType() != Material.WATER) {
+//            y++;
+//        }
+//        Location pasteLocation = new Location(world, playerLocation.getX(), y + 1, playerLocation.getBlockZ());
+//
+//        File schematic = new File(Objects.requireNonNull(getServer().getPluginManager().getPlugin("WorldEdit")).getDataFolder() + File.separator + "schematics", "raft.schem");
+//        if (!schematic.exists()) {
+//            player.sendMessage(ChatColor.RED + "Schematic not found.");
+//            return true;
+//        }
+//
+//        try {
+//            WorldEdit worldEdit = WorldEdit.getInstance();
+//            ClipboardFormat format = ClipboardFormats.findByFile(schematic);
+//            assert format != null;
+//            try (ClipboardReader reader = format.getReader(Files.newInputStream(schematic.toPath()))) {
+//                Clipboard clipboard = reader.read();
+//
+//                try (EditSession editSession = worldEdit.getEditSessionFactory().getEditSession(new BukkitWorld(player.getWorld()), -1)) {
+//                    Operation operation = new ClipboardHolder(clipboard)
+//                            .createPaste(editSession)
+//                            .to(BlockVector3.at(pasteLocation.getX(), pasteLocation.getY(), pasteLocation.getZ()))
+//                            .ignoreAirBlocks(false)
+//                            .build();
+//                    Operations.complete(operation);
+//                } catch (WorldEditException e) {
+//                    throw new RuntimeException(e);
+//                }
+//            }
+//
+//            player.sendMessage(ChatColor.GREEN + "Schematic placed successfully.");
+//        } catch (IOException e) {
+//            player.sendMessage(ChatColor.RED + "An error occurred while placing the schematic.");
+//            e.printStackTrace();
+//        }
+//        for (int i = 0; i < numMines; i++) {
+//            // Generate a random location within a 30 block radius
+//            double dx = Math.random() * 60 - 20;
+//            double dz = Math.random() * 60 - 20;
+//            Location mineLocation = player.getLocation().add(dx, 0, dz);
+//
+//            // Find the top of the water at the mine location
+//            while (mineLocation.getWorld().getBlockAt(mineLocation.getBlockX(), y, mineLocation.getBlockZ()).getType() != Material.WATER) {
+//                y++;
+//            }
+//            double dy = Math.random() * 10;
+//            dy = Math.min(dy, y - 2);
+//            mineLocation.setY(y - dy);
+//
+//            summonMine(mineLocation);
+//        }
+//
+//        return true;
+//    }
     private boolean copyLoot(Player player, String lootType) {
         Block targetBlock = player.getTargetBlockExact(5);
         if (targetBlock == null || targetBlock.getType() != Material.CHEST) {
@@ -121,6 +214,8 @@ public final class Loot_drop extends JavaPlugin implements TabExecutor, Listener
         player.sendMessage("Loot copied from the chest to the " + lootType + " loot table.");
         return true;
     }
+
+
 
     private boolean summonLoot(Player player, int yOffset, double goodProbability, double badProbability) {
         this.goodProbability = goodProbability;
@@ -214,13 +309,13 @@ public final class Loot_drop extends JavaPlugin implements TabExecutor, Listener
         }
     }
 
-    private boolean summonMine(Player player) {
-        Location playerLocation = player.getLocation();
+    private boolean summonMine(Location location) {
         // Round the coordinates to the nearest block
-        double x = Math.floor(playerLocation.getX()) + 0.5;
-        double y = Math.floor(playerLocation.getY());
-        double z = Math.floor(playerLocation.getZ()) + 0.5;
-        Location roundedLocation = new Location(playerLocation.getWorld(), x, y, z);
+        System.out.println("Summoning mine at: " + location);
+        double x = Math.floor(location.getX()) + 0.5;
+        double y = Math.floor(location.getY());
+        double z = Math.floor(location.getZ()) + 0.5;
+        Location roundedLocation = new Location(location.getWorld(), x, y, z);
 
         ItemStack heartOfTheSea = new ItemStack(Material.HEART_OF_THE_SEA);
         ItemMeta meta = heartOfTheSea.getItemMeta();
@@ -252,7 +347,7 @@ public final class Loot_drop extends JavaPlugin implements TabExecutor, Listener
     public void onPlayerApproachMine(PlayerMoveEvent event) {
         Player player = event.getPlayer();
         if (player.getGameMode() == GameMode.SURVIVAL) {
-            double range = 5.0; // Set the range as per your requirement
+            double range = 5.0; // Set the range
             for (Entity entity : player.getNearbyEntities(range, range, range)) {
                 if (entity instanceof ArmorStand) {
                     ArmorStand armorStand = (ArmorStand) entity;
