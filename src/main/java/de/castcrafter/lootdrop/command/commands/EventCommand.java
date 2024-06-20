@@ -1,6 +1,8 @@
 package de.castcrafter.lootdrop.command.commands;
 
+import de.castcrafter.lootdrop.command.commands.event.EventCreateSubCommand;
 import de.castcrafter.lootdrop.command.commands.event.EventStartSubCommand;
+import de.castcrafter.lootdrop.command.commands.event.EventStopSubCommand;
 import dev.jorel.commandapi.CommandAPICommand;
 import org.bukkit.Location;
 
@@ -25,6 +27,8 @@ public class EventCommand extends CommandAPICommand {
 		withPermission("castcrafter.event");
 
 		withSubcommand(new EventStartSubCommand("start", this));
+		withSubcommand(new EventStopSubCommand("stop", this));
+		withSubcommand(new EventCreateSubCommand("create", this));
 	}
 
 	/**
