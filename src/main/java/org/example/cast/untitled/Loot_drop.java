@@ -29,9 +29,6 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.util.Vector;
 
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -55,9 +52,16 @@ public final class Loot_drop extends JavaPlugin implements TabExecutor, Listener
         Objects.requireNonNull(this.getCommand("summonloot")).setExecutor(this);
         Objects.requireNonNull(this.getCommand("seamine")).setExecutor(this);
         getServer().getPluginManager().registerEvents(this, this);
-        event_join eventJoinInstance = new event_join();
+        EventJoinCommand eventJoinInstance = new EventJoinCommand();
         getCommand("event").setExecutor(eventJoinInstance);
-        getCommand("join").setExecutor((sender, command, label, args) -> eventJoinInstance.joinCommand(sender));
+        getCommand("join").setExecutor((sender, command, label, args) -> {
+            if(!(sender instanceof Player player)) {
+                sender.sendMessage(Messages.onlyPlayersCanExecuteCommandComponent());
+                return true;
+            }
+
+            return eventJoinInstance.performJoinSubCommand(player);
+        });
     }
 
     @Override
