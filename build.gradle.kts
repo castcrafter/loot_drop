@@ -17,6 +17,7 @@ repositories {
 
 dependencies {
     compileOnly(libs.paper.api)
+    compileOnly(libs.commandapi)
 }
 
 group = "de.castcrafter"

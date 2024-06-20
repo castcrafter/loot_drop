@@ -3,6 +3,8 @@
 
 [versions]
 paper-api = "1.20.4-R0.1-SNAPSHOT"
+commandapi = "9.5.1"
 
 [libraries]
 paper-api = { module = "io.papermc.paper:paper-api", version.ref = "paper-api" }
+commandapi = { module = "dev.jorel:commandapi-bukkit-core", version.ref = "commandapi" }
