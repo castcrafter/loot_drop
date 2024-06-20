@@ -14,6 +14,7 @@ import org.jetbrains.annotations.NotNull;
  */
 public class EventJoinCommand implements CommandExecutor {
 
+    private boolean eventStarted;
     private Location eventLocation;
 
     @Override
@@ -45,6 +46,8 @@ public class EventJoinCommand implements CommandExecutor {
                 return true;
             }
 
+            this.eventStarted = true;
+
             Bukkit.broadcast(Messages.eventHasBeenStartedComponent());
 
             for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
@@ -56,8 +59,14 @@ public class EventJoinCommand implements CommandExecutor {
                 return true;
             }
 
+            if(!eventStarted) {
+                player.sendMessage(Messages.noEventStartedComponent());
+                return true;
+            }
+
             Bukkit.broadcast(Messages.eventHasBeenStoppedComponent());
 
+            this.eventStarted = false;
             this.eventLocation = null;
         }
 
@@ -73,6 +82,11 @@ public class EventJoinCommand implements CommandExecutor {
      */
     public boolean performJoinSubCommand(Player player) {
         if (eventLocation == null) {
+            player.sendMessage(Messages.noEventStartedComponent());
+            return true;
+        }
+
+        if(!eventStarted) {
             player.sendMessage(Messages.noEventStartedComponent());
             return true;
         }
