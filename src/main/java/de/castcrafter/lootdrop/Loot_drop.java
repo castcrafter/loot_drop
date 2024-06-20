@@ -1,24 +1,21 @@
-package org.example.cast.untitled;
+package de.castcrafter.lootdrop;
 
-import com.sk89q.worldedit.EditSession;
-import com.sk89q.worldedit.WorldEdit;
-import com.sk89q.worldedit.WorldEditException;
-import com.sk89q.worldedit.bukkit.BukkitWorld;
-import com.sk89q.worldedit.extent.clipboard.Clipboard;
-import com.sk89q.worldedit.extent.clipboard.io.ClipboardFormat;
-import com.sk89q.worldedit.extent.clipboard.io.ClipboardFormats;
-import com.sk89q.worldedit.extent.clipboard.io.ClipboardReader;
-import com.sk89q.worldedit.function.operation.Operation;
-import com.sk89q.worldedit.function.operation.Operations;
-import com.sk89q.worldedit.math.BlockVector3;
-import com.sk89q.worldedit.session.ClipboardHolder;
-import org.bukkit.*;
+import org.bukkit.Bukkit;
+import org.bukkit.GameMode;
+import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.Particle;
+import org.bukkit.Sound;
 import org.bukkit.block.Block;
 import org.bukkit.block.Chest;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabExecutor;
-import org.bukkit.entity.*;
+import org.bukkit.entity.ArmorStand;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.EntityType;
+import org.bukkit.entity.Player;
+import org.bukkit.entity.TNTPrimed;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
@@ -34,7 +31,12 @@ import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 
-import static org.bukkit.inventory.EquipmentSlot.*;
+import static org.bukkit.inventory.EquipmentSlot.CHEST;
+import static org.bukkit.inventory.EquipmentSlot.FEET;
+import static org.bukkit.inventory.EquipmentSlot.HAND;
+import static org.bukkit.inventory.EquipmentSlot.HEAD;
+import static org.bukkit.inventory.EquipmentSlot.LEGS;
+import static org.bukkit.inventory.EquipmentSlot.OFF_HAND;
 
 public final class Loot_drop extends JavaPlugin implements TabExecutor, Listener {
 
@@ -52,16 +54,6 @@ public final class Loot_drop extends JavaPlugin implements TabExecutor, Listener
         Objects.requireNonNull(this.getCommand("summonloot")).setExecutor(this);
         Objects.requireNonNull(this.getCommand("seamine")).setExecutor(this);
         getServer().getPluginManager().registerEvents(this, this);
-        EventJoinCommand eventJoinInstance = new EventJoinCommand();
-        getCommand("event").setExecutor(eventJoinInstance);
-        getCommand("join").setExecutor((sender, command, label, args) -> {
-            if(!(sender instanceof Player player)) {
-                sender.sendMessage(Messages.onlyPlayersCanExecuteCommandComponent());
-                return true;
-            }
-
-            return eventJoinInstance.performJoinSubCommand(player);
-        });
     }
 
     @Override

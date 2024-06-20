@@ -1,4 +1,4 @@
-package org.example.cast.untitled;
+package de.castcrafter.lootdrop;
 
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
@@ -17,6 +17,15 @@ public class Messages {
 	 */
 	public static Component noEventStartedComponent() {
 		return Component.text("Derzeit findet kein Event statt.", NamedTextColor.RED);
+	}
+
+	/**
+	 * No event created component component.
+	 *
+	 * @return the component
+	 */
+	public static Component noEventCreatedComponent() {
+		return Component.text("Es wurde noch kein Event erstellt.", NamedTextColor.RED);
 	}
 
 	/**
