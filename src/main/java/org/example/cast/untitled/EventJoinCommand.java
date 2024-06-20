@@ -1,9 +1,5 @@
 package org.example.cast.untitled;
 
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.TextComponent;
-import net.kyori.adventure.text.event.ClickEvent;
-import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Sound;
@@ -36,6 +32,7 @@ public class EventJoinCommand implements CommandExecutor {
             }
 
             this.eventLocation = player.getLocation();
+
             player.sendMessage(Messages.eventHasBeenCreatedComponent());
         } else if (subCommand.equalsIgnoreCase("start")) {
             if (!player.hasPermission("event.start")) {
