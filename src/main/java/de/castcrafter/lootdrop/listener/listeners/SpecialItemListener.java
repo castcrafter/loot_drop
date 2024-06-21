@@ -274,10 +274,12 @@ public class SpecialItemListener implements Listener {
 		sendMessage(Component.text("-------------------------------", NamedTextColor.GRAY));
 		sendMessage(Component.text(""));
 
-		player.playSound(
-				Sound.sound().type(org.bukkit.Sound.ENTITY_ENDER_DRAGON_GROWL).volume(.35f).pitch(.75f).build(),
-				Sound.Emitter.self()
-		);
+		for (Player online : Bukkit.getOnlinePlayers()) {
+			online.playSound(
+					Sound.sound().type(org.bukkit.Sound.ENTITY_ENDER_DRAGON_GROWL).volume(.35f).pitch(.75f).build(),
+					Sound.Emitter.self()
+			);
+		}
 	}
 
 	private void sendMessage(Component component) {
