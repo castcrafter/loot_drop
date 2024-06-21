@@ -2,6 +2,7 @@ package de.castcrafter.lootdrop.listener;
 
 import de.castcrafter.lootdrop.Main;
 import de.castcrafter.lootdrop.listener.listeners.SeamineListener;
+import de.castcrafter.lootdrop.listener.listeners.SpecialItemListener;
 import org.bukkit.Bukkit;
 import org.bukkit.event.HandlerList;
 import org.bukkit.plugin.PluginManager;
@@ -20,6 +21,7 @@ public class ListenerManager {
 		PluginManager pluginManager = Bukkit.getPluginManager();
 
 		pluginManager.registerEvents(new SeamineListener(), plugin);
+		pluginManager.registerEvents(new SpecialItemListener(), plugin);
 	}
 
 	/**

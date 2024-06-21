@@ -90,4 +90,31 @@ public class Messages {
 	public static Component eventHasBeenStoppedComponent() {
 		return Component.text("Das Event wurde beendet.", NamedTextColor.GREEN);
 	}
+
+	/**
+	 * You need an item in your hand component component.
+	 *
+	 * @return the component
+	 */
+	public static Component youNeedAnItemInYourHandComponent() {
+		return Component.text("§cDu musst ein Item in deiner Hand halten!", NamedTextColor.RED);
+	}
+
+	/**
+	 * Item has no meta component component.
+	 *
+	 * @return the component
+	 */
+	public static Component itemHasNoMetaComponent() {
+		return Component.text("§cDas Item hat keine Metadaten!", NamedTextColor.RED);
+	}
+
+	/**
+	 * Item is now special component component.
+	 *
+	 * @return the component
+	 */
+	public static Component itemIsNowSpecialComponent() {
+		return Component.text("§aDas Item ist nun ein spezielles Item!", NamedTextColor.GREEN);
+	}
 }
