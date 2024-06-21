@@ -8,6 +8,8 @@ import org.bukkit.plugin.java.JavaPlugin;
  */
 public class Main extends JavaPlugin {
 
+	private Loot_drop oldMain;
+
 	private CommandManager commandManager;
 
 	/**
@@ -22,15 +24,21 @@ public class Main extends JavaPlugin {
 	@Override
 	public void onLoad() {
 		commandManager = new CommandManager();
+
+		oldMain = new Loot_drop(this);
 	}
 
 	@Override
 	public void onEnable() {
 		commandManager.registerCommands();
+
+		oldMain.onEnable();
 	}
 
 	@Override
 	public void onDisable() {
+		oldMain.onDisable();
+		
 		commandManager.unregisterCommands();
 	}
 }
