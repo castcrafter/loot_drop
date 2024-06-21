@@ -11,9 +11,6 @@ commands:
   summonloot:
     description: Summons the loot drop at your position.
     usage: /summonloot
-  seamine:
-    description: Summons a mine at your position.
-    usage: /seamine
 #  sealoot:
 #    description: Summons a loot drop at your position.
 #    usage: /sealoot
