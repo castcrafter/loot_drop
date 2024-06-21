@@ -1,7 +1,9 @@
 name: loot_drop
 version: '${project.version}'
-main: org.example.cast.untitled.Loot_drop
+main: de.castcrafter.lootdrop.Main
 api-version: '1.20'
+depend:
+  - CommandAPI
 commands:
   copyloot:
     description: Copies the contents of the chest you are looking at.
@@ -15,9 +17,3 @@ commands:
 #  sealoot:
 #    description: Summons a loot drop at your position.
 #    usage: /sealoot
-  event:
-    description: Manages events
-    usage: /event
-  join:
-    description: Joins an event
-    usage: /join
