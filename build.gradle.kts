@@ -5,6 +5,8 @@
 plugins {
     `java-library`
     `maven-publish`
+
+    id("com.github.johnrengelman.shadow") version "7.1.2"
 }
 
 repositories {
@@ -18,10 +20,17 @@ repositories {
 dependencies {
     compileOnly(libs.paper.api)
     compileOnly(libs.commandapi)
+    implementation(libs.inventory.framework)
 }
 
 group = "de.castcrafter"
 version = "1.0-SNAPSHOT"
+
+tasks {
+    shadowJar {
+        relocate("com.github.stefvanschie.inventoryframework", "de.castcrafter.lootdrop.inventoryframework")
+    }
+}
 description = "loot_drop"
 
 java.sourceCompatibility = JavaVersion.VERSION_21

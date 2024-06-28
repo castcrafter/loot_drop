@@ -2,6 +2,7 @@ package de.castcrafter.lootdrop.command.commands.event;
 
 import de.castcrafter.lootdrop.Messages;
 import de.castcrafter.lootdrop.command.commands.EventCommand;
+import de.castcrafter.lootdrop.utils.SoundUtils;
 import dev.jorel.commandapi.CommandAPICommand;
 import org.bukkit.Bukkit;
 import org.bukkit.Sound;
@@ -34,7 +35,7 @@ public class EventStartSubCommand extends CommandAPICommand {
 			Bukkit.broadcast(Messages.eventHasBeenStartedComponent());
 
 			for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
-				onlinePlayer.playSound(onlinePlayer.getLocation(), Sound.ENTITY_ENDER_DRAGON_GROWL, 1f, 1f);
+				SoundUtils.playSound(onlinePlayer, Sound.ENTITY_ENDER_DRAGON_GROWL, 1, 1);
 			}
 		});
 	}
