@@ -30,14 +30,17 @@ public class Duel {
 	private final DuelGui duelGui;
 	private final List<ItemStack> rewards;
 
+	private final DuelVoteTimer voteTimer;
+
 	/**
 	 * Instantiates a new Duel.
 	 *
-	 * @param playerOne the player one
-	 * @param playerTwo the player two
-	 * @param rewards   the rewards
+	 * @param playerOne    the player one
+	 * @param playerTwo    the player two
+	 * @param rewards      the rewards
+	 * @param voteDuration the vote duration
 	 */
-	public Duel(Player playerOne, Player playerTwo, List<ItemStack> rewards) {
+	public Duel(Player playerOne, Player playerTwo, List<ItemStack> rewards, int voteDuration) {
 		this.playerOne = playerOne;
 		this.playerTwo = playerTwo;
 
@@ -46,6 +49,9 @@ public class Duel {
 
 		this.duelGui = new DuelGui(this);
 		this.rewards = rewards;
+
+		this.voteTimer = new DuelVoteTimer(this, voteDuration);
+		this.voteTimer.start();
 	}
 
 	/**
@@ -102,15 +108,6 @@ public class Duel {
 	public int getVotesPercentage(Player player) {
 		return (int) ( (double) playerVotes.values().stream().filter(player::equals).count() / playerVotes.size() *
 					   100 );
-	}
-
-	/**
-	 * Sets vote open.
-	 *
-	 * @param voteOpen the vote open
-	 */
-	public void setVoteOpen(boolean voteOpen) {
-		this.voteOpen = voteOpen;
 	}
 
 	/**
@@ -269,5 +266,23 @@ public class Duel {
 	 */
 	public List<ItemStack> getRewards() {
 		return rewards;
+	}
+
+	/**
+	 * Gets vote timer.
+	 *
+	 * @return the vote timer
+	 */
+	public DuelVoteTimer getVoteTimer() {
+		return voteTimer;
+	}
+
+	/**
+	 * Gets player votes.
+	 *
+	 * @return the player votes
+	 */
+	public Map<Player, Player> getPlayerVotes() {
+		return playerVotes;
 	}
 }
