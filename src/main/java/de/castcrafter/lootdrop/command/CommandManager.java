@@ -3,6 +3,7 @@ package de.castcrafter.lootdrop.command;
 import de.castcrafter.lootdrop.command.commands.EventCommand;
 import de.castcrafter.lootdrop.command.commands.EventJoinCommand;
 import de.castcrafter.lootdrop.command.commands.MakeSpecialCommand;
+import de.castcrafter.lootdrop.command.commands.drops.DropsCommand;
 import de.castcrafter.lootdrop.command.commands.duel.DuelCommand;
 import de.castcrafter.lootdrop.command.commands.seamine.SeamineCommand;
 import dev.jorel.commandapi.CommandAPI;
@@ -29,6 +30,7 @@ public class CommandManager {
 		this.commands.add(new SeamineCommand("seamine"));
 		this.commands.add(new MakeSpecialCommand("makespecial"));
 		this.commands.add(new DuelCommand("duel"));
+		this.commands.add(new DropsCommand("drops"));
 	}
 
 	/**

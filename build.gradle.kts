@@ -16,6 +16,7 @@ repositories {
     maven("https://oss.sonatype.org/content/groups/public/")
     maven("https://repo.maven.apache.org/maven2/")
     maven("https://repo.extendedclip.com/content/repositories/placeholderapi/")
+    maven("https://repo.oraxen.com/releases")
 }
 
 dependencies {
@@ -23,6 +24,7 @@ dependencies {
     compileOnly(libs.commandapi)
     implementation(libs.inventory.framework)
     compileOnly(libs.placeholder.api)
+    compileOnly(libs.oraxen)
 }
 
 group = "de.castcrafter"
