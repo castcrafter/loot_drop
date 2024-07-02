@@ -1,5 +1,6 @@
 package de.castcrafter.lootdrop;
 
+import de.castcrafter.lootdrop.utils.SoundUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -254,7 +255,7 @@ public class Loot_drop implements Listener, CommandExecutor {
 						  lootLocation.getBlockZ();
 		for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
 			onlinePlayer.sendTitle(title, subtitle, 10, 200, 20);
-			onlinePlayer.playSound(player.getLocation(), Sound.BLOCK_BEACON_ACTIVATE, 1f, 1f);
+			SoundUtils.playSound(onlinePlayer, Sound.BLOCK_BEACON_ACTIVATE, 1, 1);
 		}
 		return true;
 	}
@@ -300,7 +301,7 @@ public class Loot_drop implements Listener, CommandExecutor {
 				Bukkit.getScheduler().cancelTask(particleTaskId);
 				armorStand.remove();
 
-				player.playSound(player.getLocation(), Sound.ENTITY_ZOMBIE_BREAK_WOODEN_DOOR, 0.5f, 0.1f);
+				SoundUtils.playSound(player, Sound.ENTITY_ZOMBIE_BREAK_WOODEN_DOOR, .5f, 1);
 			}
 		}
 	}
