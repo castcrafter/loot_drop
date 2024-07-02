@@ -4,6 +4,7 @@ main: de.castcrafter.lootdrop.Main
 api-version: '1.20'
 depend:
   - CommandAPI
+  - PlaceholderAPI
 commands:
   copyloot:
     description: Copies the contents of the chest you are looking at.

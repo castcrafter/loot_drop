@@ -13,11 +13,13 @@ repositories {
     maven("https://repo.papermc.io/repository/maven-public/")
     maven("https://oss.sonatype.org/content/groups/public/")
     maven("https://repo.maven.apache.org/maven2/")
+    maven("https://repo.extendedclip.com/content/repositories/placeholderapi/")
 }
 
 dependencies {
     compileOnly(libs.paper.api)
     compileOnly(libs.commandapi)
+    compileOnly(libs.placeholder.api)
 }
 
 group = "de.castcrafter"
