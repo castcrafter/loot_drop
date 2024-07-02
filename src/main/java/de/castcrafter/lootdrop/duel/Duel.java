@@ -1,6 +1,7 @@
 package de.castcrafter.lootdrop.duel;
 
 import de.castcrafter.lootdrop.Main;
+import de.castcrafter.lootdrop.gui.duel.DuelGui;
 import de.castcrafter.lootdrop.utils.SoundUtils;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;

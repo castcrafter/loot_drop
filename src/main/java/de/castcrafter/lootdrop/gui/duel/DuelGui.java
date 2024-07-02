@@ -1,4 +1,4 @@
-package de.castcrafter.lootdrop.duel;
+package de.castcrafter.lootdrop.gui.duel;
 
 import com.github.stefvanschie.inventoryframework.adventuresupport.ComponentHolder;
 import com.github.stefvanschie.inventoryframework.gui.GuiItem;
@@ -6,6 +6,8 @@ import com.github.stefvanschie.inventoryframework.gui.type.ChestGui;
 import com.github.stefvanschie.inventoryframework.pane.OutlinePane;
 import com.github.stefvanschie.inventoryframework.pane.StaticPane;
 import de.castcrafter.lootdrop.Main;
+import de.castcrafter.lootdrop.duel.Duel;
+import de.castcrafter.lootdrop.duel.DuelVoteState;
 import de.castcrafter.lootdrop.gui.button.PlayerHeadButton;
 import de.castcrafter.lootdrop.utils.ItemUtils;
 import de.castcrafter.lootdrop.utils.SoundUtils;

@@ -1,8 +1,8 @@
 package de.castcrafter.lootdrop.command.commands.duel.subcommands;
 
 import de.castcrafter.lootdrop.duel.Duel;
-import de.castcrafter.lootdrop.duel.DuelGui;
 import de.castcrafter.lootdrop.duel.DuelManager;
+import de.castcrafter.lootdrop.gui.duel.DuelGui;
 import dev.jorel.commandapi.CommandAPICommand;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
