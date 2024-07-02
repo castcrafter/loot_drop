@@ -13,7 +13,9 @@ import net.kyori.adventure.sound.Sound;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Material;
+import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.Player;
+import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.scheduler.BukkitRunnable;
 
 /**
@@ -30,7 +32,7 @@ public class DuelGui extends ChestGui {
 	 * @param duel the duel
 	 */
 	public DuelGui(Duel duel) {
-		super(3, ComponentHolder.of(
+		super(5, ComponentHolder.of(
 				Component.text("Duel: " + duel.getPlayerOne().getName() + " vs " + duel.getPlayerTwo().getName())));
 
 		this.duel = duel;
@@ -39,7 +41,7 @@ public class DuelGui extends ChestGui {
 		setOnGlobalDrag(event -> event.setCancelled(true));
 
 		OutlinePane topOutlinePane = new OutlinePane(0, 0, 9, 1);
-		OutlinePane bottomOutlinePane = new OutlinePane(0, 2, 9, 1);
+		OutlinePane bottomOutlinePane = new OutlinePane(0, 4, 9, 1);
 
 		topOutlinePane.addItem(new GuiItem(ItemUtils.getItemStack(Material.BLACK_STAINED_GLASS_PANE, 1, 0,
 																  Component.text(" ")
@@ -54,7 +56,7 @@ public class DuelGui extends ChestGui {
 		addPane(topOutlinePane);
 		addPane(bottomOutlinePane);
 
-		this.pane = new StaticPane(0, 0, 9, 3);
+		this.pane = new StaticPane(0, 0, 9, 5);
 		addPane(pane);
 
 		update();
@@ -62,8 +64,8 @@ public class DuelGui extends ChestGui {
 
 	@Override
 	public void update() {
-		addPlayerCastButton(duel.getPlayerOne(), 2, 1);
-		addPlayerCastButton(duel.getPlayerTwo(), 6, 1);
+		addPlayerCastButton(duel.getPlayerOne(), 2, 2);
+		addPlayerCastButton(duel.getPlayerTwo(), 6, 2);
 
 		super.update();
 	}
@@ -75,6 +77,7 @@ public class DuelGui extends ChestGui {
 	 * @param x      the x
 	 * @param y      the y
 	 */
+	@SuppressWarnings("SameParameterValue")
 	private void addPlayerCastButton(Player toCast, int x, int y) {
 		pane.addItem(new PlayerHeadButton(
 				toCast,
@@ -82,13 +85,7 @@ public class DuelGui extends ChestGui {
 				Component.text(toCast.getName(), NamedTextColor.GOLD),
 				Component.text(""),
 				Component.text("Klicke, um für diesen Spieler", NamedTextColor.GRAY),
-				Component.text("abzustimmen.", NamedTextColor.GRAY),
-				Component.text(""),
-				Component.text("Aktuelle Stimmen: ", NamedTextColor.GRAY)
-						 .append(Component.text(
-								 duel.getVotes(toCast) + "(" + duel.getVotesPercentage(toCast) + "%)",
-								 NamedTextColor.YELLOW
-						 ))
+				Component.text("abzustimmen.", NamedTextColor.GRAY)
 		), x, y);
 	}
 
@@ -118,7 +115,7 @@ public class DuelGui extends ChestGui {
 				break;
 		}
 
-		closeInventory(voter);
+		closeInventory(voter, true);
 		update();
 	}
 
@@ -136,7 +133,7 @@ public class DuelGui extends ChestGui {
 	 *
 	 * @param player the player
 	 */
-	private void playErrorClickSound(Player player) {
+	private void playErrorClickSound(HumanEntity player) {
 		player.playSound(
 				Sound.sound().type(org.bukkit.Sound.BLOCK_NOTE_BLOCK_BASS).volume(.5f).build(),
 				Sound.Emitter.self()
@@ -148,11 +145,16 @@ public class DuelGui extends ChestGui {
 	 *
 	 * @param player the player
 	 */
-	public void closeInventory(Player player) {
+	public static void closeInventory(HumanEntity player, boolean callRunnable) {
+		if (!callRunnable) {
+			player.closeInventory(InventoryCloseEvent.Reason.PLUGIN);
+			return;
+		}
+
 		new BukkitRunnable() {
 			@Override
 			public void run() {
-				player.closeInventory();
+				player.closeInventory(InventoryCloseEvent.Reason.PLUGIN);
 			}
 		}.runTaskLater(Main.getInstance(), 1);
 	}

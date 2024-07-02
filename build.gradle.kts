@@ -6,7 +6,7 @@ plugins {
     `java-library`
     `maven-publish`
 
-    id("com.github.johnrengelman.shadow") version "7.1.2"
+    id("io.github.goooler.shadow") version "8.1.8"
 }
 
 repositories {
@@ -35,8 +35,6 @@ tasks {
 }
 description = "loot_drop"
 
-java.sourceCompatibility = JavaVersion.VERSION_21
-
 publishing {
     publications.create<MavenPublication>("maven") {
         from(components["java"])
@@ -49,4 +47,10 @@ tasks.withType<JavaCompile>() {
 
 tasks.withType<Javadoc>() {
     options.encoding = "UTF-8"
+}
+
+java {
+    toolchain {
+        languageVersion.set(JavaLanguageVersion.of(21))
+    }
 }

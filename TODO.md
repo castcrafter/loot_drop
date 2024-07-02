@@ -1,0 +1,1 @@
+- [ ] End duel when player leaves

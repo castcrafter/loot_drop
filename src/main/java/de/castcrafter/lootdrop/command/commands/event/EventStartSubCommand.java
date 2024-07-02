@@ -35,7 +35,7 @@ public class EventStartSubCommand extends CommandAPICommand {
 			Bukkit.broadcast(Messages.eventHasBeenStartedComponent());
 
 			for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
-				SoundUtils.playSound(onlinePlayer, Sound.ENTITY_ENDER_DRAGON_GROWL, 1, 1);
+				SoundUtils.playSound(onlinePlayer, Sound.ENTITY_ENDER_DRAGON_GROWL, .5f, .75f);
 			}
 		});
 	}
