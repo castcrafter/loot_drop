@@ -1,1 +1,2 @@
 - [ ] End duel when player leaves
+- [ ] WorldSave lootdropconfig

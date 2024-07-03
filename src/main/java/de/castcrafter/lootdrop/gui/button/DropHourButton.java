@@ -1,6 +1,7 @@
 package de.castcrafter.lootdrop.gui.button;
 
 import com.github.stefvanschie.inventoryframework.gui.GuiItem;
+import de.castcrafter.lootdrop.config.drops.HourlyDrop;
 import de.castcrafter.lootdrop.gui.drops.DropGui;
 import de.castcrafter.lootdrop.gui.drops.DropsGui;
 import de.castcrafter.lootdrop.utils.SoundUtils;
@@ -11,9 +12,9 @@ import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.text.logger.slf4j.ComponentLogger;
 import org.bukkit.Sound;
 import org.bukkit.entity.HumanEntity;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.persistence.PersistentDataType;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,16 +29,16 @@ public class DropHourButton extends GuiItem {
 	/**
 	 * Form item stack item stack.
 	 *
-	 * @param hour             the hour
-	 * @param playerOpenedDrop the player opened drop
+	 * @param hourlyDrop the hourly drop
 	 *
 	 * @return the item stack
 	 */
-	private static ItemStack formItemStack(int hour, boolean playerOpenedDrop) {
+	private static ItemStack formItemStack(Player forPlayer, HourlyDrop hourlyDrop) {
 		int currentHourSinceStart = DropsGui.getCurrentHourSinceStart(DropsGui.START_TIME, DropsGui.CURRENT_TIME);
+		boolean playerOpenedDrop = !hourlyDrop.canPlayerUse(forPlayer.getUniqueId());
 
 		String oraxenName;
-		if (currentHourSinceStart < hour) {
+		if (currentHourSinceStart < hourlyDrop.getHour()) {
 			oraxenName = "icon_daily_gift_unclaimed";
 		} else {
 			oraxenName = "icon_daily_gift_ready";
@@ -47,9 +48,9 @@ public class DropHourButton extends GuiItem {
 			oraxenName = "icon_daily_gift_claimed";
 		}
 
-		ItemStack itemStack = OraxenItems.getItemById(oraxenName).build().clone();
-		itemStack.setAmount(hour <= itemStack.getMaxStackSize() ? hour : Math.min(hour, itemStack.getMaxStackSize()));
+		int hour = hourlyDrop.getHour();
 
+		ItemStack itemStack = OraxenItems.getItemById(oraxenName).build().clone();
 		ItemMeta itemMeta = itemStack.getItemMeta();
 
 		if (itemMeta == null) {
@@ -86,51 +87,33 @@ public class DropHourButton extends GuiItem {
 	/**
 	 * Instantiates a new Drop hour button.
 	 *
-	 * @param playerOpenedDrop the player opened drop
-	 * @param hour             the hour
+	 * @param hourlyDrop the hourly drop
 	 */
-	public DropHourButton(boolean playerOpenedDrop, int hour) {
-		super(formItemStack(hour, playerOpenedDrop), event -> {
+	public DropHourButton(Player forPlayer, HourlyDrop hourlyDrop) {
+		super(formItemStack(forPlayer, hourlyDrop), event -> {
 				  int currentHour = DropsGui.getCurrentHourSinceStart(DropsGui.START_TIME, DropsGui.CURRENT_TIME);
 
 				  HumanEntity humanEntity = event.getWhoClicked();
 
-				  if (currentHour < hour) {
+				  if (currentHour < hourlyDrop.getHour()) {
 					  humanEntity.sendMessage(
 							  Component.text("Diese Stunde ist noch nicht erreicht", NamedTextColor.RED));
 					  SoundUtils.playSound(humanEntity, Sound.BLOCK_NOTE_BLOCK_BASS, .5f, 1f);
 					  return;
 				  }
 
-				  if (humanEntity.getPersistentDataContainer().has(DropsGui.HOUR_DATA_KEY)) {
-					  byte[] hourData = humanEntity.getPersistentDataContainer()
-												   .get(DropsGui.HOUR_DATA_KEY, PersistentDataType.BYTE_ARRAY);
-					  try {
-						  byte data = DropsGui.getHourData(hour - 1, hourData);
+				  if (!hourlyDrop.canPlayerUse(humanEntity.getUniqueId())) {
+					  humanEntity.sendMessage(
+							  Component.text(
+									  "Du hast diese Stunde bereits geöffnet",
+									  NamedTextColor.RED
+							  ));
 
-						  if (data == 1) {
-							  humanEntity.sendMessage(
-									  Component.text(
-											  "Du hast diese Stunde bereits geöffnet",
-											  NamedTextColor.RED
-									  ));
-
-							  SoundUtils.playSound(humanEntity, Sound.BLOCK_NOTE_BLOCK_BASS, .5f, 1f);
-
-							  return;
-						  }
-					  } catch (Exception exception) {
-						  LOGGER.error(humanEntity.getName() + " tried to open hour " + hour + " gui but got an " +
-									   "exception", exception);
-					  }
-				  } else {
-					  humanEntity.getPersistentDataContainer()
-								 .set(DropsGui.HOUR_DATA_KEY, PersistentDataType.BYTE_ARRAY,
-									  DropsGui.getEmptyHourData(DropsGui.MAX_HOURS)
-								 );
+					  SoundUtils.playSound(humanEntity, Sound.BLOCK_NOTE_BLOCK_BASS, .5f, 1f);
+					  return;
 				  }
 
-				  new DropGui(hour, DropGui.getRecipes()).show(humanEntity);
+				  new DropGui(humanEntity, hourlyDrop).show(humanEntity);
 			  }
 		);
 	}

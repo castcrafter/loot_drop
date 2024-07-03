@@ -1,6 +1,8 @@
 package de.castcrafter.lootdrop.command.commands.drops;
 
+import de.castcrafter.lootdrop.command.commands.drops.subcommands.DropsReloadConfigCommand;
 import de.castcrafter.lootdrop.command.commands.drops.subcommands.DropsSetCurrentHourCommand;
+import de.castcrafter.lootdrop.command.commands.drops.subcommands.DropsSetDefaultConfigCommand;
 import de.castcrafter.lootdrop.command.commands.drops.subcommands.DropsSetStartTimeCommand;
 import de.castcrafter.lootdrop.gui.drops.DropsGui;
 import dev.jorel.commandapi.CommandAPICommand;
@@ -20,8 +22,10 @@ public class DropsCommand extends CommandAPICommand {
 
 		withPermission("lootdrop.command.drops");
 
-		withSubcommand(new DropsSetCurrentHourCommand("setcurrenthour"));
-		withSubcommand(new DropsSetStartTimeCommand("setcurrenttime"));
+		withSubcommand(new DropsSetCurrentHourCommand("set-current-hour"));
+		withSubcommand(new DropsSetStartTimeCommand("set-current-time"));
+		withSubcommand(new DropsSetDefaultConfigCommand("set-default-config"));
+		withSubcommand(new DropsReloadConfigCommand("reload-config"));
 
 		executesPlayer((player, args) -> {
 			new DropsGui(player).show(player);

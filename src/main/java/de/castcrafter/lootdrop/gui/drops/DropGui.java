@@ -2,16 +2,17 @@ package de.castcrafter.lootdrop.gui.drops;
 
 import com.github.stefvanschie.inventoryframework.adventuresupport.ComponentHolder;
 import com.github.stefvanschie.inventoryframework.gui.type.MerchantGui;
+import de.castcrafter.lootdrop.config.drops.HourlyDrop;
+import de.castcrafter.lootdrop.config.drops.HourlyDropRecipe;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
+import org.bukkit.entity.HumanEntity;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.MerchantInventory;
 import org.bukkit.inventory.MerchantRecipe;
-import org.bukkit.persistence.PersistentDataContainer;
-import org.bukkit.persistence.PersistentDataType;
 
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
@@ -19,37 +20,16 @@ import java.util.List;
  * The type Drop gui.
  */
 public class DropGui extends MerchantGui {
-
-	private final List<MerchantRecipe> recipes;
-
-	/**
-	 * Gets recipes.
-	 *
-	 * @return the recipes
-	 */
-	public static List<MerchantRecipe> getRecipes() {
-		List<MerchantRecipe> recipes = new ArrayList<>(); // FIXME: 02.07.2024 17:46 fetch from somewhere
-
-		MerchantRecipe merchantRecipe = new MerchantRecipe(new ItemStack(Material.ACACIA_BOAT), 0, 1, false, 0, 1);
-		merchantRecipe.setIngredients(
-				List.of(new ItemStack(Material.ACACIA_DOOR), new ItemStack(Material.ACACIA_BUTTON)));
-
-		recipes.add(merchantRecipe);
-
-		return recipes;
-	}
-
 	/**
 	 * Instantiates a new Drop gui.
 	 *
-	 * @param hour    the hour
-	 * @param recipes the recipes
+	 * @param openedForPlayer the opened for player
+	 * @param hourlyDrop      the hourly drop
 	 */
-	public DropGui(int hour, List<MerchantRecipe> recipes) {
-		super(ComponentHolder.of(Component.text("Stunde " + hour + " Drops")));
+	public DropGui(HumanEntity openedForPlayer, HourlyDrop hourlyDrop) {
+		super(ComponentHolder.of(Component.text("Stunde " + hourlyDrop.getHour() + " Drops")));
 
-		this.recipes = recipes;
-
+		List<MerchantRecipe> recipes = hourlyDrop.getMerchantRecipes(openedForPlayer.getUniqueId());
 		recipes.forEach(this::addTrade);
 
 		setOnClose(event -> {
@@ -59,19 +39,22 @@ public class DropGui extends MerchantGui {
 				return;
 			}
 
-			ItemStack[] contents = merchantInventory.getContents();
+			List<ItemStack> contents = Arrays.asList(merchantInventory.getContents());
 
-			if (contents == null) {
-				return;
+			for (ItemStack content : contents) {
+				if (content == null || content.getType().equals(Material.AIR)) {
+					continue;
+				}
+
+				HashMap<Integer, ItemStack> notAdded = event.getPlayer().getInventory().addItem(content);
+
+				if (notAdded.isEmpty()) {
+					continue;
+				}
+
+				notAdded.forEach(
+						(index, item) -> event.getPlayer().getWorld().dropItem(event.getPlayer().getLocation(), item));
 			}
-
-			HashMap<Integer, ItemStack> notAdded = event.getPlayer().getInventory().addItem(contents);
-			if (notAdded.isEmpty()) {
-				return;
-			}
-
-			notAdded.forEach(
-					(index, item) -> event.getPlayer().getWorld().dropItem(event.getPlayer().getLocation(), item));
 		});
 
 		setOnTopClick(event -> {
@@ -92,54 +75,22 @@ public class DropGui extends MerchantGui {
 				return;
 			}
 
-			if (!recipesContain(recipe)) {
+			HourlyDropRecipe dropRecipe = hourlyDrop.findByMerchantRecipe(recipe);
+
+			if (dropRecipe == null) {
 				return;
 			}
-			PersistentDataContainer persistentDataContainer = event.getWhoClicked().getPersistentDataContainer();
 
-			if (!persistentDataContainer.has(DropsGui.HOUR_DATA_KEY)) {
-				persistentDataContainer.set(DropsGui.HOUR_DATA_KEY, PersistentDataType.BYTE_ARRAY,
-											DropsGui.getEmptyHourData(DropsGui.MAX_HOURS)
-				);
-			}
+			HumanEntity humanEntity = event.getWhoClicked();
 
-			byte[] hourData =
-					persistentDataContainer.getOrDefault(DropsGui.HOUR_DATA_KEY, PersistentDataType.BYTE_ARRAY,
-														 DropsGui.getEmptyHourData(DropsGui.MAX_HOURS)
-					);
+			int currentPlayerUses = dropRecipe.getPlayerUses(humanEntity.getUniqueId());
+			int clickedItemAmount = currentItem.getAmount();
+			int resultAmount = recipe.getResult().getAmount();
 
-			hourData[ hour - 1 ] = 1;
+			int newUses = currentPlayerUses + clickedItemAmount / resultAmount;
 
-			persistentDataContainer.set(DropsGui.HOUR_DATA_KEY, PersistentDataType.BYTE_ARRAY, hourData);
+			recipe.setUses(newUses);
+			dropRecipe.setPlayerUses(humanEntity.getUniqueId(), newUses);
 		});
-	}
-
-	/**
-	 * Recipes contain boolean.
-	 *
-	 * @param recipe the recipe
-	 *
-	 * @return the boolean
-	 */
-	private boolean recipesContain(MerchantRecipe recipe) {
-		return recipes.stream().anyMatch(r -> recipeEquals(r, recipe));
-	}
-
-	/**
-	 * Recipe equals boolean.
-	 *
-	 * @param recipeOne the recipe one
-	 * @param recipeTwo the recipe two
-	 *
-	 * @return the boolean
-	 */
-	private boolean recipeEquals(MerchantRecipe recipeOne, MerchantRecipe recipeTwo) {
-		return recipeOne.getResult().equals(recipeTwo.getResult()) &&
-			   recipeOne.getUses() == recipeTwo.getUses() &&
-			   recipeOne.getMaxUses() == recipeTwo.getMaxUses() &&
-			   recipeOne.hasExperienceReward() == recipeTwo.hasExperienceReward() &&
-			   recipeOne.getVillagerExperience() == recipeTwo.getVillagerExperience() &&
-			   recipeOne.getPriceMultiplier() == recipeTwo.getPriceMultiplier() &&
-			   recipeOne.getIngredients().equals(recipeTwo.getIngredients());
 	}
 }

@@ -5,17 +5,16 @@ import com.github.stefvanschie.inventoryframework.gui.type.ChestGui;
 import com.github.stefvanschie.inventoryframework.pane.PaginatedPane;
 import com.github.stefvanschie.inventoryframework.pane.component.PagingButtons;
 import com.github.stefvanschie.inventoryframework.pane.util.Slot;
+import de.castcrafter.lootdrop.config.LootDropConfig;
+import de.castcrafter.lootdrop.config.drops.HourlyDrop;
 import de.castcrafter.lootdrop.gui.button.DropHourButton;
 import io.th0rgal.oraxen.api.OraxenItems;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
-import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.persistence.PersistentDataContainer;
-import org.bukkit.persistence.PersistentDataType;
 
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
@@ -26,9 +25,6 @@ import java.util.List;
  * The type Drops gui.
  */
 public class DropsGui extends ChestGui {
-
-	public static final int MAX_HOURS = 24;
-	public static final NamespacedKey HOUR_DATA_KEY = new NamespacedKey("lootdrop", "hour_data");
 
 	public static ZonedDateTime START_TIME = ZonedDateTime.of(
 			2024,
@@ -53,33 +49,6 @@ public class DropsGui extends ChestGui {
 	);
 
 	private final Player openedForPlayer;
-
-	/**
-	 * Gets hour data.
-	 *
-	 * @param hour     the hour
-	 * @param hourData the hour data
-	 *
-	 * @return the hour data
-	 */
-	public static byte getHourData(int hour, byte[] hourData) {
-		if (hour < 0 || hour >= hourData.length) {
-			throw new IllegalArgumentException("Hour out of bounds");
-		}
-
-		return hourData[ hour ];
-	}
-
-	/**
-	 * Get empty hour data byte [ ].
-	 *
-	 * @param maxHours the max hours
-	 *
-	 * @return the byte [ ]
-	 */
-	public static byte[] getEmptyHourData(int maxHours) {
-		return new byte[ maxHours ];
-	}
 
 	/**
 	 * Gets current hour since start.
@@ -109,9 +78,12 @@ public class DropsGui extends ChestGui {
 		PaginatedPane paginatedPane = new PaginatedPane(1, 2, 7, 3);
 
 		List<GuiItem> items = new ArrayList<>();
-		for (int i = 0; i < MAX_HOURS; i++) {
-			items.add(getHourGuiItem(i + 1));
+		List<HourlyDrop> drops = LootDropConfig.INSTANCE.getDrops();
+
+		for (HourlyDrop hourlyDrop : drops) {
+			items.add(getHourGuiItem(hourlyDrop));
 		}
+
 		paginatedPane.populateWithGuiItems(items);
 
 		PagingButtons pagingButtons = new PagingButtons(Slot.fromXY(0, 3), 9, paginatedPane);
@@ -169,17 +141,11 @@ public class DropsGui extends ChestGui {
 	/**
 	 * Create items pane paginated pane.
 	 *
-	 * @param hour the hour
+	 * @param hourlyDrop the hourly drop
 	 *
 	 * @return the paginated pane
 	 */
-	public GuiItem getHourGuiItem(int hour) {
-		PersistentDataContainer container = openedForPlayer.getPersistentDataContainer();
-		boolean openedByPlayer = container.has(HOUR_DATA_KEY) && getHourData(hour - 1, container.get(
-				HOUR_DATA_KEY,
-				PersistentDataType.BYTE_ARRAY
-		)) == 1;
-
-		return new DropHourButton(openedByPlayer, hour);
+	public GuiItem getHourGuiItem(HourlyDrop hourlyDrop) {
+		return new DropHourButton(openedForPlayer, hourlyDrop);
 	}
 }

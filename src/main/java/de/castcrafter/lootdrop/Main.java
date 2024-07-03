@@ -1,6 +1,7 @@
 package de.castcrafter.lootdrop;
 
 import de.castcrafter.lootdrop.command.CommandManager;
+import de.castcrafter.lootdrop.config.LootDropConfig;
 import de.castcrafter.lootdrop.listener.ListenerManager;
 import de.castcrafter.lootdrop.placeholder.LootDropPlaceholderExpansion;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -26,6 +27,8 @@ public class Main extends JavaPlugin {
 
 	@Override
 	public void onLoad() {
+		LootDropConfig.INSTANCE.loadConfig();
+
 		commandManager = new CommandManager();
 		listenerManager = new ListenerManager();
 

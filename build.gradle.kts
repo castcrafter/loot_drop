@@ -20,11 +20,14 @@ repositories {
 }
 
 dependencies {
-    compileOnly(libs.paper.api)
-    compileOnly(libs.commandapi)
-    implementation(libs.inventory.framework)
-    compileOnly(libs.placeholder.api)
-    compileOnly(libs.oraxen)
+    compileOnlyApi(libs.paper.api)
+    compileOnlyApi(libs.commandapi)
+    compileOnlyApi(libs.placeholder.api)
+    compileOnlyApi(libs.oraxen)
+
+    api(libs.inventory.framework)
+    api(libs.configurate.core)
+    api(libs.configurate.yml)
 }
 
 group = "de.castcrafter"
@@ -33,6 +36,7 @@ version = "1.0-SNAPSHOT"
 tasks {
     shadowJar {
         relocate("com.github.stefvanschie.inventoryframework", "de.castcrafter.lootdrop.inventoryframework")
+        relocate("org.spongepowered", "de.castcrafter.lootdrop.spongepowered")
     }
 }
 description = "loot_drop"
