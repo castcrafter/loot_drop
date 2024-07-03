@@ -1,28 +1,33 @@
 package de.castcrafter.lootdrop.gui.drops;
 
-import com.github.stefvanschie.inventoryframework.adventuresupport.ComponentHolder;
 import com.github.stefvanschie.inventoryframework.gui.GuiItem;
 import com.github.stefvanschie.inventoryframework.gui.type.ChestGui;
-import com.github.stefvanschie.inventoryframework.pane.OutlinePane;
-import com.github.stefvanschie.inventoryframework.pane.StaticPane;
+import com.github.stefvanschie.inventoryframework.pane.PaginatedPane;
+import com.github.stefvanschie.inventoryframework.pane.component.PagingButtons;
+import com.github.stefvanschie.inventoryframework.pane.util.Slot;
 import de.castcrafter.lootdrop.gui.button.DropHourButton;
-import de.castcrafter.lootdrop.utils.ItemUtils;
+import io.th0rgal.oraxen.api.OraxenItems;
 import net.kyori.adventure.text.Component;
-import org.bukkit.Material;
+import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * The type Drops gui.
  */
 public class DropsGui extends ChestGui {
 
-	public static final int MAX_HOURS = 23;
+	public static final int MAX_HOURS = 24;
 	public static final NamespacedKey HOUR_DATA_KEY = new NamespacedKey("lootdrop", "hour_data");
 
 	public static ZonedDateTime START_TIME = ZonedDateTime.of(
@@ -94,51 +99,77 @@ public class DropsGui extends ChestGui {
 	 * @param openedForPlayer the opened for player
 	 */
 	public DropsGui(Player openedForPlayer) {
-		super(5, ComponentHolder.of(Component.text("Drops")));
+		super(6, "<shift:-8><glyph:daily_rewards_ui>");
 
 		this.openedForPlayer = openedForPlayer;
 
 		setOnGlobalClick(event -> event.setCancelled(true));
 		setOnGlobalDrag(event -> event.setCancelled(true));
 
-		OutlinePane topOutlinePane = new OutlinePane(0, 0, 9, 1);
-		OutlinePane bottomOutlinePane = new OutlinePane(0, 4, 9, 1);
+		PaginatedPane paginatedPane = new PaginatedPane(1, 2, 7, 3);
 
-		topOutlinePane.addItem(new GuiItem(ItemUtils.getItemStack(Material.BLACK_STAINED_GLASS_PANE, 1, 0,
-																  Component.text(" ")
-		)));
-		topOutlinePane.setRepeat(true);
-
-		bottomOutlinePane.addItem(new GuiItem(ItemUtils.getItemStack(Material.BLACK_STAINED_GLASS_PANE, 1, 0,
-																	 Component.text(" ")
-		)));
-		bottomOutlinePane.setRepeat(true);
-
-		StaticPane staticPane = new StaticPane(0, 1, 9, 3);
-
-		int hour = 1;
-		for (int y = 0; y < 3; y++) {
-			for (int x = 0; x < 9; x++) {
-				if (( y == 2 && ( x == 0 || x == 1 ) ) || ( y == 2 && ( x == 7 || x == 8 ) )) {
-					continue;
-				}
-
-				staticPane.addItem(getHourGuiItem(hour), x, y);
-				hour++;
-
-				System.out.println(hour);
-			}
+		List<GuiItem> items = new ArrayList<>();
+		for (int i = 0; i < MAX_HOURS; i++) {
+			items.add(getHourGuiItem(i + 1));
 		}
+		paginatedPane.populateWithGuiItems(items);
 
-		addPane(staticPane);
-		addPane(topOutlinePane);
-		addPane(bottomOutlinePane);
+		PagingButtons pagingButtons = new PagingButtons(Slot.fromXY(0, 3), 9, paginatedPane);
+		setBackItem(pagingButtons);
+		setForwardItem(pagingButtons);
+
+		addPane(paginatedPane);
+		addPane(pagingButtons);
 
 		update();
 	}
 
 	/**
+	 * Sets back item.
+	 *
+	 * @param buttons the buttons
+	 */
+	public void setBackItem(PagingButtons buttons) {
+		ItemStack previous = OraxenItems.getItemById("daily_reward_previous").build();
+		ItemMeta itemMeta = previous.getItemMeta();
+
+		if (itemMeta != null) {
+			itemMeta.displayName(Component.text("Zurück", NamedTextColor.GOLD).decoration(
+					TextDecoration.ITALIC,
+					false
+			));
+			previous.setItemMeta(itemMeta);
+		}
+
+		buttons.setBackwardButton(
+				new GuiItem(previous));
+	}
+
+	/**
+	 * Sets forward item.
+	 *
+	 * @param buttons the buttons
+	 */
+	public void setForwardItem(PagingButtons buttons) {
+		ItemStack next = OraxenItems.getItemById("daily_reward_next").build();
+		ItemMeta itemMeta = next.getItemMeta();
+
+		if (itemMeta != null) {
+			itemMeta.displayName(Component.text("Weiter", NamedTextColor.GOLD).decoration(
+					TextDecoration.ITALIC,
+					false
+			));
+			next.setItemMeta(itemMeta);
+		}
+
+		buttons.setForwardButton(
+				new GuiItem(next));
+	}
+
+	/**
 	 * Create items pane paginated pane.
+	 *
+	 * @param hour the hour
 	 *
 	 * @return the paginated pane
 	 */

@@ -66,6 +66,10 @@ public class DropGui extends MerchantGui {
 			}
 
 			HashMap<Integer, ItemStack> notAdded = event.getPlayer().getInventory().addItem(contents);
+			if (notAdded.isEmpty()) {
+				return;
+			}
+
 			notAdded.forEach(
 					(index, item) -> event.getPlayer().getWorld().dropItem(event.getPlayer().getLocation(), item));
 		});

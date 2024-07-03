@@ -25,8 +25,31 @@ public class DropHourButton extends GuiItem {
 
 	private static final ComponentLogger LOGGER = ComponentLogger.logger(DropHourButton.class);
 
+	/**
+	 * Form item stack item stack.
+	 *
+	 * @param hour             the hour
+	 * @param playerOpenedDrop the player opened drop
+	 *
+	 * @return the item stack
+	 */
 	private static ItemStack formItemStack(int hour, boolean playerOpenedDrop) {
-		ItemStack itemStack = OraxenItems.getItemById(( playerOpenedDrop ? "red_" : "green_" ) + hour).build().clone();
+		int currentHourSinceStart = DropsGui.getCurrentHourSinceStart(DropsGui.START_TIME, DropsGui.CURRENT_TIME);
+
+		String oraxenName;
+		if (currentHourSinceStart < hour) {
+			oraxenName = "icon_daily_gift_unclaimed";
+		} else {
+			oraxenName = "icon_daily_gift_ready";
+		}
+
+		if (playerOpenedDrop) {
+			oraxenName = "icon_daily_gift_claimed";
+		}
+
+		ItemStack itemStack = OraxenItems.getItemById(oraxenName).build().clone();
+		itemStack.setAmount(hour <= itemStack.getMaxStackSize() ? hour : Math.min(hour, itemStack.getMaxStackSize()));
+
 		ItemMeta itemMeta = itemStack.getItemMeta();
 
 		if (itemMeta == null) {
