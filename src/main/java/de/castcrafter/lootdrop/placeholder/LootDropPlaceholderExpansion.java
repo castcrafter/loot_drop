@@ -49,9 +49,9 @@ public class LootDropPlaceholderExpansion extends PlaceholderExpansion {
 		}
 
 		if (params.equalsIgnoreCase("unique_joins")) {
-			return String.format("%04d", Bukkit.getOfflinePlayers().length);
+			return String.format("%d", Bukkit.getOfflinePlayers().length);
 		} else if (params.equalsIgnoreCase("current_players")) {
-			return String.format("%04d", Bukkit.getOnlinePlayers().size());
+			return String.format("%d", Bukkit.getOnlinePlayers().size());
 		} else if (paramsArray[ 0 ].equalsIgnoreCase("name") && paramsArray.length >= 2) {
 			return Arrays.stream(Arrays.copyOfRange(paramsArray, 1, paramsArray.length))
 						 .reduce((a, b) -> a + "_" + b)
