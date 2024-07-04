@@ -2,10 +2,15 @@ package de.castcrafter.lootdrop.config.drops;
 
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextDecoration;
+import net.kyori.adventure.text.logger.slf4j.ComponentLogger;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
+import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.bukkit.Color;
 import org.bukkit.Material;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.inventory.meta.PotionMeta;
 import org.spongepowered.configurate.objectmapping.ConfigSerializable;
 
 import java.util.ArrayList;
@@ -18,6 +23,8 @@ import java.util.Objects;
 @ConfigSerializable
 public class HourlyDropItemStack {
 
+	private static final ComponentLogger LOGGER = ComponentLogger.logger(HourlyDropItemStack.class);
+
 	public static final LegacyComponentSerializer SECTION_SERIALIZER =
 			LegacyComponentSerializer.builder().extractUrls().hexColors().character('§').build();
 
@@ -28,6 +35,12 @@ public class HourlyDropItemStack {
 	private int amount = 1;
 	private String displayName = null;
 	private List<String> lore = null;
+	private boolean unbreakable = false;
+
+	private List<HourlyDropItemStackEnchantment> enchantments = null;
+
+	private List<HourlyDropItemStackPotionEffect> potionEffects = null;
+	private String potionColor = null;
 
 	/**
 	 * Instantiates a new Hourly drop item stack.
@@ -38,16 +51,31 @@ public class HourlyDropItemStack {
 	/**
 	 * Instantiates a new Hourly drop item stack.
 	 *
-	 * @param material    the material
-	 * @param amount      the amount
-	 * @param displayName the display name
-	 * @param lore        the lore
+	 * @param material      the material
+	 * @param amount        the amount
+	 * @param displayName   the display name
+	 * @param lore          the lore
+	 * @param enchantments  the enchantments
+	 * @param unbreakable   the unbreakable
+	 * @param potionColor   the potion color
+	 * @param potionEffects the potion effects
 	 */
-	public HourlyDropItemStack(String material, int amount, String displayName, List<String> lore) {
+	public HourlyDropItemStack(
+			String material, int amount, String displayName, List<String> lore,
+			List<HourlyDropItemStackEnchantment> enchantments,
+			boolean unbreakable,
+			String potionColor,
+			List<HourlyDropItemStackPotionEffect> potionEffects
+	) {
 		this.material = material;
 		this.amount = amount;
 		this.displayName = displayName;
 		this.lore = lore;
+		this.enchantments = enchantments;
+		this.unbreakable = unbreakable;
+
+		this.potionColor = potionColor;
+		this.potionEffects = potionEffects;
 	}
 
 	/**
@@ -66,6 +94,31 @@ public class HourlyDropItemStack {
 	 */
 	public int getAmount() {
 		return amount;
+	}
+
+	/**
+	 * Gets color.
+	 *
+	 * @return the color
+	 */
+	public Color getPotionColor() {
+		Color bukkitColor = null;
+
+		if (potionColor != null) {
+			ColorMap colorMap = ColorMap.getByColorName(potionColor);
+
+			if (colorMap != null) {
+				bukkitColor = colorMap.getColor();
+			} else {
+				try {
+					bukkitColor = Color.fromRGB(Integer.parseInt(potionColor, 16));
+				} catch (NumberFormatException exception) {
+					LOGGER.error("Could not parse color " + potionColor + " for itemstack " + this, exception);
+				}
+			}
+		}
+
+		return bukkitColor;
 	}
 
 	/**
@@ -113,6 +166,31 @@ public class HourlyDropItemStack {
 			)).toList());
 		}
 
+		if (enchantments != null && !enchantments.isEmpty()) {
+			for (HourlyDropItemStackEnchantment enchantment : enchantments) {
+				Enchantment bukkitEnchantment = enchantment.getEnchantment();
+
+				if (bukkitEnchantment != null) {
+					itemMeta.addEnchant(bukkitEnchantment, enchantment.getLevel(), true);
+				}
+			}
+		}
+
+		if (potionEffects != null && !potionEffects.isEmpty() && itemMeta instanceof PotionMeta potionMeta) {
+			Color color = getPotionColor();
+			if (color != null) {
+				potionMeta.setColor(color);
+			}
+
+			for (HourlyDropItemStackPotionEffect potionEffect : potionEffects) {
+				potionMeta.addCustomEffect(potionEffect.getPotionEffect(), true);
+			}
+		}
+
+		if (itemMeta != null) {
+			itemMeta.setUnbreakable(unbreakable);
+		}
+
 		itemStack.setItemMeta(itemMeta);
 
 		return itemStack;
@@ -136,6 +214,24 @@ public class HourlyDropItemStack {
 		return lore;
 	}
 
+	/**
+	 * Gets enchantments.
+	 *
+	 * @return the enchantments
+	 */
+	public List<HourlyDropItemStackEnchantment> getEnchantments() {
+		return enchantments;
+	}
+
+	/**
+	 * Is unbreakable boolean.
+	 *
+	 * @return the boolean
+	 */
+	public boolean isUnbreakable() {
+		return unbreakable;
+	}
+
 	@Override
 	public boolean equals(Object other) {
 		if (this == other) {
@@ -156,5 +252,10 @@ public class HourlyDropItemStack {
 	@Override
 	public int hashCode() {
 		return Objects.hash(material, amount, displayName, lore);
+	}
+
+	@Override
+	public String toString() {
+		return ToStringBuilder.reflectionToString(this);
 	}
 }

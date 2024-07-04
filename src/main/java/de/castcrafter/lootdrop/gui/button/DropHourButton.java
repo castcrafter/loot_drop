@@ -1,6 +1,7 @@
 package de.castcrafter.lootdrop.gui.button;
 
 import com.github.stefvanschie.inventoryframework.gui.GuiItem;
+import de.castcrafter.lootdrop.config.LootDropConfig;
 import de.castcrafter.lootdrop.config.drops.HourlyDrop;
 import de.castcrafter.lootdrop.gui.drops.DropGui;
 import de.castcrafter.lootdrop.gui.drops.DropsGui;
@@ -34,7 +35,8 @@ public class DropHourButton extends GuiItem {
 	 * @return the item stack
 	 */
 	private static ItemStack formItemStack(Player forPlayer, HourlyDrop hourlyDrop) {
-		int currentHourSinceStart = DropsGui.getCurrentHourSinceStart(DropsGui.START_TIME, DropsGui.CURRENT_TIME);
+		int currentHourSinceStart =
+				DropsGui.getCurrentHourSinceStart(LootDropConfig.INSTANCE.getStartedTimestamp(), DropsGui.CURRENT_TIME);
 		boolean playerOpenedDrop = !hourlyDrop.canPlayerUse(forPlayer.getUniqueId());
 
 		String oraxenName;
@@ -91,7 +93,9 @@ public class DropHourButton extends GuiItem {
 	 */
 	public DropHourButton(Player forPlayer, HourlyDrop hourlyDrop) {
 		super(formItemStack(forPlayer, hourlyDrop), event -> {
-				  int currentHour = DropsGui.getCurrentHourSinceStart(DropsGui.START_TIME, DropsGui.CURRENT_TIME);
+				  int currentHour = DropsGui.getCurrentHourSinceStart(LootDropConfig.INSTANCE.getStartedTimestamp(),
+																	  DropsGui.CURRENT_TIME
+				  );
 
 				  HumanEntity humanEntity = event.getWhoClicked();
 

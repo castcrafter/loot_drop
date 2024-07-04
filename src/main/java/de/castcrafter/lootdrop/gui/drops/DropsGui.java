@@ -26,17 +26,6 @@ import java.util.List;
  */
 public class DropsGui extends ChestGui {
 
-	public static ZonedDateTime START_TIME = ZonedDateTime.of(
-			2024,
-			7,
-			2,
-			18,
-			0,
-			0,
-			0,
-			ZoneId.of("Europe/Berlin")
-	);
-
 	public static ZonedDateTime CURRENT_TIME = ZonedDateTime.of(
 			2024,
 			7,

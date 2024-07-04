@@ -1,8 +1,10 @@
 package de.castcrafter.lootdrop.command.commands.drops.subcommands;
 
-import de.castcrafter.lootdrop.gui.drops.DropsGui;
+import de.castcrafter.lootdrop.config.LootDropConfig;
 import dev.jorel.commandapi.CommandAPICommand;
-import dev.jorel.commandapi.arguments.StringArgument;
+import dev.jorel.commandapi.arguments.IntegerArgument;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
@@ -22,24 +24,20 @@ public class DropsSetStartTimeCommand extends CommandAPICommand {
 
 		withPermission("lootdrop.command.drops.setstarttime");
 
-		withArguments(new StringArgument("time"));
+		withArguments(new IntegerArgument("year"));
+		withArguments(new IntegerArgument("month"));
+		withArguments(new IntegerArgument("day"));
+		withArguments(new IntegerArgument("hour"));
+		withArguments(new IntegerArgument("minute"));
 
 		executesPlayer((player, args) -> {
-			String timeString = args.getUnchecked("time");
+			int year = args.getOrDefaultUnchecked("year", 2024);
+			int month = args.getOrDefaultUnchecked("month", 1);
+			int day = args.getOrDefaultUnchecked("day", 1);
+			int hour = args.getOrDefaultUnchecked("hour", 0);
+			int minute = args.getOrDefaultUnchecked("minute", 0);
 
-			if (timeString == null) {
-				player.sendMessage("Bitte gib eine Zeit an.");
-				return;
-			}
-
-			String[] time = timeString.split("-");
-			int year = Integer.parseInt(time[ 0 ]);
-			int month = Integer.parseInt(time[ 1 ]);
-			int day = Integer.parseInt(time[ 2 ]);
-			int hour = Integer.parseInt(time[ 3 ]);
-			int minute = Integer.parseInt(time[ 4 ]);
-
-			DropsGui.START_TIME = ZonedDateTime.of(
+			ZonedDateTime newTimestamp = ZonedDateTime.of(
 					year,
 					month,
 					day,
@@ -50,7 +48,12 @@ public class DropsSetStartTimeCommand extends CommandAPICommand {
 					ZoneId.of("Europe/Berlin")
 			);
 
-			player.sendMessage("§aDu hast die Startzeit auf §e" + DropsGui.START_TIME + " §agesetzt.");
+			LootDropConfig.INSTANCE.setStartedTimestamp(newTimestamp);
+			LootDropConfig.INSTANCE.saveConfig();
+
+			player.sendMessage(Component.text("Du hast die Startzeit auf ", NamedTextColor.GREEN)
+										.append(Component.text(newTimestamp.toString(), NamedTextColor.YELLOW))
+										.append(Component.text(" gesetzt.", NamedTextColor.GREEN)));
 		});
 	}
 }

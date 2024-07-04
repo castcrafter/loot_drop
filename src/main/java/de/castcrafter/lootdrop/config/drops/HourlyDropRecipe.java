@@ -1,5 +1,7 @@
 package de.castcrafter.lootdrop.config.drops;
 
+import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.MerchantRecipe;
 import org.spongepowered.configurate.objectmapping.ConfigSerializable;
@@ -16,12 +18,11 @@ import java.util.UUID;
 @ConfigSerializable
 public class HourlyDropRecipe {
 
-	private final int MAX_USES = 1;
+	private HourlyDropItemStack firstItem = null;
+	private HourlyDropItemStack secondItem = null;
+	private HourlyDropItemStack resultItem = null;
 
-	private HourlyDropItemStack firstItem = new HourlyDropItemStack("stone", 1, "Stone", List.of());
-	private HourlyDropItemStack secondItem = new HourlyDropItemStack("stone", 1, "Stone", List.of());
-	private HourlyDropItemStack resultItem = new HourlyDropItemStack("stone", 1, "Stone", List.of());
-
+	private int maxUses = 1;
 	private Map<UUID, Integer> playerUses = new HashMap<>();
 
 	/**
@@ -47,6 +48,7 @@ public class HourlyDropRecipe {
 		this.secondItem = secondItem;
 		this.resultItem = resultItem;
 		this.playerUses = playerUses;
+		this.maxUses = maxUses;
 	}
 
 	public int getPlayerUses(UUID uuid) {
@@ -98,7 +100,7 @@ public class HourlyDropRecipe {
 	 * @return the boolean
 	 */
 	public boolean canPlayerUse(UUID player) {
-		return playerUses.getOrDefault(player, 0) < MAX_USES;
+		return playerUses.getOrDefault(player, 0) < maxUses;
 	}
 
 	/**
@@ -137,15 +139,20 @@ public class HourlyDropRecipe {
 	 */
 	public MerchantRecipe toRecipe(UUID uuid) {
 		MerchantRecipe merchantRecipe =
-				new MerchantRecipe(resultItem.toItemStack(), playerUses.getOrDefault(uuid, 0), MAX_USES, false);
+				new MerchantRecipe(resultItem.toItemStack(), playerUses.getOrDefault(uuid, 0), maxUses, false);
 
 		if (firstItem != null) {
 			merchantRecipe.addIngredient(firstItem.toItemStack());
+		} else {
+			merchantRecipe.addIngredient(new ItemStack(Material.AIR));
 		}
 
 		if (secondItem != null) {
 			merchantRecipe.addIngredient(secondItem.toItemStack());
+		} else {
+			merchantRecipe.addIngredient(new ItemStack(Material.AIR));
 		}
+
 
 		return merchantRecipe;
 	}
@@ -162,7 +169,7 @@ public class HourlyDropRecipe {
 
 		HourlyDropRecipe otherRecipe = (HourlyDropRecipe) other;
 
-		return MAX_USES == otherRecipe.MAX_USES && Objects.equals(firstItem, otherRecipe.firstItem) &&
+		return maxUses == otherRecipe.maxUses && Objects.equals(firstItem, otherRecipe.firstItem) &&
 			   Objects.equals(secondItem, otherRecipe.secondItem) &&
 			   Objects.equals(resultItem, otherRecipe.resultItem) &&
 			   Objects.equals(playerUses, otherRecipe.playerUses);
@@ -170,6 +177,11 @@ public class HourlyDropRecipe {
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(firstItem, secondItem, resultItem, MAX_USES, playerUses);
+		return Objects.hash(firstItem, secondItem, resultItem, maxUses, playerUses);
+	}
+
+	@Override
+	public String toString() {
+		return ToStringBuilder.reflectionToString(this);
 	}
 }

@@ -2,15 +2,15 @@ package de.castcrafter.lootdrop.config;
 
 import de.castcrafter.lootdrop.Main;
 import de.castcrafter.lootdrop.config.drops.HourlyDrop;
-import de.castcrafter.lootdrop.config.drops.HourlyDropItemStack;
-import de.castcrafter.lootdrop.config.drops.HourlyDropRecipe;
 import net.kyori.adventure.text.logger.slf4j.ComponentLogger;
 import org.spongepowered.configurate.CommentedConfigurationNode;
 import org.spongepowered.configurate.objectmapping.ConfigSerializable;
 import org.spongepowered.configurate.yaml.YamlConfigurationLoader;
 
+import java.time.Instant;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -25,6 +25,7 @@ public class LootDropConfig {
 	private transient YamlConfigurationLoader loader;
 	private transient CommentedConfigurationNode node;
 
+	private long startedTimestampSeconds = ZonedDateTime.now().toEpochSecond();
 	private List<HourlyDrop> drops = new ArrayList<>();
 
 	/**
@@ -58,6 +59,7 @@ public class LootDropConfig {
 			}
 
 			drops = fetchedConfig.drops;
+			startedTimestampSeconds = fetchedConfig.startedTimestampSeconds;
 		} catch (Exception exception) {
 			LOGGER.error("Failed to load configuration", exception);
 		}
@@ -76,28 +78,29 @@ public class LootDropConfig {
 	}
 
 	/**
-	 * Sets default config.
-	 */
-	public void setDefaultConfig() {
-		HourlyDropItemStack itemStack = new HourlyDropItemStack("stone", 1, "Stone", List.of());
-
-		for (int i = 0; i < 2; i++) {
-			List<HourlyDropRecipe> recipes = new ArrayList<>();
-			recipes.add(new HourlyDropRecipe(itemStack, itemStack, itemStack, 1, new HashMap<>()));
-
-			HourlyDrop hourlyDrop = new HourlyDrop(i, recipes);
-			drops.add(hourlyDrop);
-		}
-
-		LOGGER.info("Default configuration set");
-	}
-
-	/**
 	 * Gets drops.
 	 *
 	 * @return the drops
 	 */
 	public List<HourlyDrop> getDrops() {
 		return drops;
+	}
+
+	/**
+	 * Gets started timestamp.
+	 *
+	 * @return the started timestamp
+	 */
+	public ZonedDateTime getStartedTimestamp() {
+		return ZonedDateTime.ofInstant(Instant.ofEpochSecond(startedTimestampSeconds), ZoneId.systemDefault());
+	}
+
+	/**
+	 * Sets started timestamp.
+	 *
+	 * @param startedTimestamp the started timestamp
+	 */
+	public void setStartedTimestamp(ZonedDateTime startedTimestamp) {
+		this.startedTimestampSeconds = startedTimestamp.toEpochSecond();
 	}
 }
