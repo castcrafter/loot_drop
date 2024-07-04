@@ -28,7 +28,7 @@ public class DropGui extends MerchantGui {
 	 * @param hourlyDrop      the hourly drop
 	 */
 	public DropGui(HumanEntity openedForPlayer, HourlyDrop hourlyDrop) {
-		super(ComponentHolder.of(Component.text("Stunde " + hourlyDrop.getHour() + " Drops")));
+		super(ComponentHolder.of(Component.text("Stunde " + hourlyDrop.getHour() + " Trades")));
 
 		List<MerchantRecipe> recipes = hourlyDrop.getMerchantRecipes(openedForPlayer.getUniqueId());
 		recipes.forEach(this::addTrade);
