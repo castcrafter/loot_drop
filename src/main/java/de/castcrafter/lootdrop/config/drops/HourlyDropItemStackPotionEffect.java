@@ -23,7 +23,7 @@ public class HourlyDropItemStackPotionEffect {
 	private int amplifier;
 	private boolean ambient = false;
 	private boolean particles = false;
-	private boolean icon = false;
+	private boolean icon = true;
 
 	/**
 	 * Instantiates a new Hourly drop item stack potion effect.
