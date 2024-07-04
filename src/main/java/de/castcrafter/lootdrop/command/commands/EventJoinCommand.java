@@ -1,6 +1,7 @@
 package de.castcrafter.lootdrop.command.commands;
 
 import de.castcrafter.lootdrop.Messages;
+import de.castcrafter.lootdrop.utils.Chat;
 import dev.jorel.commandapi.CommandAPICommand;
 import org.bukkit.Location;
 
@@ -26,17 +27,17 @@ public class EventJoinCommand extends CommandAPICommand {
 			boolean eventStarted = eventCommand.isEventStarted();
 
 			if (eventLocation == null) {
-				player.sendMessage(Messages.noEventStartedComponent());
+				Chat.sendMessage(player, Messages.noEventStartedComponent());
 				return;
 			}
 
-			if(!eventStarted) {
-				player.sendMessage(Messages.noEventStartedComponent());
+			if (!eventStarted) {
+				Chat.sendMessage(player, Messages.noEventStartedComponent());
 				return;
 			}
 
-			player.teleportAsync(eventLocation).thenAcceptAsync(v ->{
-				player.sendMessage(Messages.youHaveBeenTeleportedToEventLocationComponent());
+			player.teleportAsync(eventLocation).thenAcceptAsync(v -> {
+				Chat.sendMessage(player, Messages.youHaveBeenTeleportedToEventLocationComponent());
 			});
 		});
 	}

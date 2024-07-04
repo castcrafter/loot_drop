@@ -1,6 +1,7 @@
 package de.castcrafter.lootdrop.command.commands.drops.subcommands;
 
 import de.castcrafter.lootdrop.config.LootDropConfig;
+import de.castcrafter.lootdrop.utils.Chat;
 import dev.jorel.commandapi.CommandAPICommand;
 import dev.jorel.commandapi.arguments.IntegerArgument;
 import net.kyori.adventure.text.Component;
@@ -51,9 +52,9 @@ public class DropsSetStartTimeCommand extends CommandAPICommand {
 			LootDropConfig.INSTANCE.setStartedTimestamp(newTimestamp);
 			LootDropConfig.INSTANCE.saveConfig();
 
-			player.sendMessage(Component.text("Du hast die Startzeit auf ", NamedTextColor.GREEN)
-										.append(Component.text(newTimestamp.toString(), NamedTextColor.YELLOW))
-										.append(Component.text(" gesetzt.", NamedTextColor.GREEN)));
+			Chat.sendMessage(player, Component.text("Die Startzeit wurde auf ", NamedTextColor.GREEN)
+											  .append(Component.text(newTimestamp.toString(), NamedTextColor.YELLOW))
+											  .append(Component.text(" gesetzt.", NamedTextColor.GREEN)));
 		});
 	}
 }

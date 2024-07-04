@@ -3,6 +3,7 @@ package de.castcrafter.lootdrop.command.commands.duel.subcommands;
 import de.castcrafter.lootdrop.duel.Duel;
 import de.castcrafter.lootdrop.duel.DuelFinishState;
 import de.castcrafter.lootdrop.duel.DuelManager;
+import de.castcrafter.lootdrop.utils.Chat;
 import dev.jorel.commandapi.CommandAPICommand;
 import dev.jorel.commandapi.arguments.ArgumentSuggestions;
 import dev.jorel.commandapi.arguments.StringArgument;
@@ -50,15 +51,16 @@ public class DuelResultCommand extends CommandAPICommand {
 			Duel duel = DuelManager.INSTANCE.getRunningDuel();
 
 			if (duel == null) {
-				player.sendMessage(Component.text(
-						"Aktuell läuft kein Duell, welches du beenden könntest!", NamedTextColor.RED
+				Chat.sendMessage(player, Component.text(
+						"Es läuft aktuell kein Duell, für das du abstimmen kannst!",
+						NamedTextColor.RED
 				));
 
 				return;
 			}
 
 			if (duel.getVoteTimer() != null && duel.getVoteTimer().isRunning()) {
-				player.sendMessage(Component.text(
+				Chat.sendMessage(player, Component.text(
 						"Die Abstimmung läuft noch. Bitte warte, bis die Abstimmung beendet ist!", NamedTextColor.RED
 				));
 
@@ -83,8 +85,8 @@ public class DuelResultCommand extends CommandAPICommand {
 			} else if (finishStateString.equalsIgnoreCase(playerTwoName)) {
 				state = DuelFinishState.PLAYER_TWO_WON;
 			} else {
-				player.sendMessage(Component.text(
-						"Der Spieler " + finishStateString + " ist nicht Teil des Duells!", NamedTextColor.RED
+				Chat.sendMessage(player, Component.text(
+						"Die Spieler sind " + playerOneName + " und " + playerTwoName, NamedTextColor.RED
 				));
 
 				return;

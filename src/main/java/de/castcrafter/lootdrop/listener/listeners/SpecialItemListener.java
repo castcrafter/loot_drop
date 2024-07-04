@@ -1,5 +1,6 @@
 package de.castcrafter.lootdrop.listener.listeners;
 
+import de.castcrafter.lootdrop.utils.Chat;
 import net.kyori.adventure.sound.Sound;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -282,13 +283,22 @@ public class SpecialItemListener implements Listener {
 		}
 	}
 
+	/**
+	 * Send message.
+	 *
+	 * @param component the component
+	 */
 	private void sendMessage(Component component) {
 		Bukkit.broadcast(prefix().append(component));
 	}
 
+	/**
+	 * Prefix component.
+	 *
+	 * @return the component
+	 */
 	private Component prefix() {
-		return Component.text(">> ", NamedTextColor.DARK_GRAY).append(Component.text("Treasure", NamedTextColor.GOLD))
-						.append(Component.text(" | ", NamedTextColor.DARK_GRAY));
+		return Chat.prefix();
 	}
 
 	/**

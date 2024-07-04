@@ -2,6 +2,7 @@ package de.castcrafter.lootdrop.duel;
 
 import de.castcrafter.lootdrop.Main;
 import de.castcrafter.lootdrop.gui.duel.DuelGui;
+import de.castcrafter.lootdrop.utils.Chat;
 import de.castcrafter.lootdrop.utils.SoundUtils;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -66,7 +67,10 @@ public class Duel {
 			@Override
 			public void run() {
 				Bukkit.getOnlinePlayers().forEach(onlinePlayer -> {
-					onlinePlayer.sendMessage(Component.text("Die Abstimmung wurde beendet!", NamedTextColor.GOLD));
+					Chat.sendMessage(onlinePlayer, Component.text(
+							"Das Duell wird in wenigen Sekunden gestartet. Bitte warte kurz.",
+							NamedTextColor.GRAY
+					));
 
 					SoundUtils.playSound(onlinePlayer, Sound.ENTITY_ENDER_DRAGON_GROWL, .5f, 1f);
 					DuelGui.closeInventory(onlinePlayer, false);
@@ -269,23 +273,23 @@ public class Duel {
 
 			int totalDroppedCountInt = totalDroppedCount.get();
 			if (totalDroppedCountInt > 0) {
-				player.sendMessage(Component.text(
-													"Dein Inventar war voll, daher wurde" + ( totalDroppedCountInt == 1 ? " " : "n " ),
-													NamedTextColor.RED
-											).append(Component.text(
-													totalDroppedCount + " Item" + ( totalDroppedCountInt == 1 ? "" : "s" ),
-													NamedTextColor.YELLOW
-											))
-											.append(Component.text(
-													" auf den Boden geworfen. Nur du kannst diese" +
-													( totalDroppedCountInt == 1 ? "s" : "" ) +
-													" Item " + ( totalDroppedCountInt == 1 ? "" : "s" ) +
-													"einsammeln.",
-													NamedTextColor.RED
-											)));
+				Chat.sendMessage(player, Component.text(
+														  "Dein Inventar war voll, daher wurde" + ( totalDroppedCountInt == 1 ? " " : "n " ),
+														  NamedTextColor.RED
+												  ).append(Component.text(
+														  totalDroppedCount + " Item" + ( totalDroppedCountInt == 1 ? "" : "s" ),
+														  NamedTextColor.YELLOW
+												  ))
+												  .append(Component.text(
+														  " auf den Boden geworfen. Nur du kannst diese" +
+														  ( totalDroppedCountInt == 1 ? "s" : "" ) +
+														  " Item " + ( totalDroppedCountInt == 1 ? "" : "s" ) +
+														  "einsammeln.",
+														  NamedTextColor.RED
+												  )));
 			}
 
-			player.sendMessage(Component.text("Dein Gewinn wurde dir zugestellt.", NamedTextColor.GREEN));
+			Chat.sendMessage(player, Component.text("Vielen Dank für deine Teilnahme!", NamedTextColor.GRAY));
 		});
 	}
 
@@ -296,48 +300,50 @@ public class Duel {
 	 * @param state  the state
 	 */
 	private void printDuelEndMessage(Player player, DuelFinishState state) {
-		player.sendMessage(Component.empty());
-		player.sendMessage(Component.text("-------------------------------", NamedTextColor.GRAY));
-		player.sendMessage(Component.empty());
-		player.sendMessage(Component.text("Das Duell wurde beendet", NamedTextColor.GOLD));
-		player.sendMessage(Component.empty());
+		Chat.sendMessage(player, Component.empty());
+		Chat.sendMessage(player, Component.text("-------------------------------", NamedTextColor.GRAY));
+		Chat.sendMessage(player, Component.empty());
+		Chat.sendMessage(player, Component.text("Das Duell wurde beendet", NamedTextColor.GOLD));
+		Chat.sendMessage(player, Component.empty());
 
 		if (state.isPlayerOneWon() || state.isPlayerTwoWon()) {
 			Player winningPlayer = state.isPlayerOneWon() ? playerOne : playerTwo;
-			Player losingPlayer = state.isPlayerOneWon() ? playerTwo : playerOne;
 
-			int winningPlayerVotes = (int) playerVotes.values().stream().filter(winningPlayer::equals).count();
-			int losingPlayerVotes = playerVotes.size() - winningPlayerVotes;
-
-			int winningPlayerVotesPercentage = (int) ( (double) winningPlayerVotes / playerVotes.size() * 100 );
-			int losingPlayerVotesPercentage = 100 - winningPlayerVotesPercentage;
-
-			player.sendMessage(
-					Component.text(winningPlayer.getName() + " hat das Duell gewonnen.", NamedTextColor.GREEN));
-			player.sendMessage(Component.empty());
-			player.sendMessage(Component.text("Abgegebene Stimmen:", NamedTextColor.GRAY));
-			player.sendMessage(Component.text(" - " + winningPlayer.getName() + ": " + winningPlayerVotes + " (" +
-											  winningPlayerVotesPercentage + "%)", NamedTextColor.GREEN));
-			player.sendMessage(Component.text(" - " + losingPlayer.getName() + ": " + losingPlayerVotes + " (" +
-											  losingPlayerVotesPercentage + "%)", NamedTextColor.RED));
+			Chat.sendMessage(
+					player, Component.text(winningPlayer.getName() + " hat das Duell gewonnen.", NamedTextColor.GREEN));
 		} else if (state.isDraw()) {
-			player.sendMessage(Component.text("Das Duell endete unentschieden.", NamedTextColor.GREEN));
+			Chat.sendMessage(player, Component.text("Das Duell endete unentschieden.", NamedTextColor.GRAY));
 		} else if (state.isForceStop()) {
-			player.sendMessage(Component.text("Es werden keine Gewinne verteilt, da das Duell manuell beendet " +
-											  "wurde.", NamedTextColor.GRAY));
+			Chat.sendMessage(player, Component.text("Es werden keine Gewinne verteilt, da das Duell manuell beendet " +
+													"wurde.", NamedTextColor.GRAY));
 		} else if (state.isNobodyWon()) {
-			player.sendMessage(Component.text("Niemand hat das Duell gewonnen, daher werden keine Gewinne " +
-											  "verteilt.", NamedTextColor.GRAY));
+			Chat.sendMessage(player, Component.text("Niemand hat das Duell gewonnen, daher werden keine Gewinne " +
+													"verteilt.", NamedTextColor.GRAY));
 		} else if (state.isPlayerLeft()) {
-			player.sendMessage(Component.text(
+			Chat.sendMessage(player, Component.text(
 					"Ein Spieler hat das Duell verlassen, daher wird das Duell beendet.",
 					NamedTextColor.GRAY
 			));
 		}
+		String playerOneName = playerOne.getName();
+		String playerTwoName = playerTwo.getName();
 
-		player.sendMessage(Component.empty());
-		player.sendMessage(Component.text("-------------------------------", NamedTextColor.GRAY));
-		player.sendMessage(Component.empty());
+		int playerOneVotes = getVotes(playerOne);
+		int playerTwoVotes = getVotes(playerTwo);
+
+		int playerOneVotesPercentage = getVotesPercentage(playerOne);
+		int playerTwoVotesPercentage = getVotesPercentage(playerTwo);
+
+		Chat.sendMessage(player, Component.empty());
+		Chat.sendMessage(player, Component.text("Abgegebene Stimmen:", NamedTextColor.GRAY));
+		Chat.sendMessage(player, Component.text(" - " + playerOneName + ": " + playerOneVotes + " (" +
+												playerOneVotesPercentage + "%)", NamedTextColor.GREEN));
+		Chat.sendMessage(player, Component.text(" - " + playerTwoName + ": " + playerTwoVotes + " (" +
+												playerTwoVotesPercentage + "%)", NamedTextColor.GREEN));
+
+		Chat.sendMessage(player, Component.empty());
+		Chat.sendMessage(player, Component.text("-----------------------------", NamedTextColor.GRAY));
+		Chat.sendMessage(player, Component.empty());
 	}
 
 	/**

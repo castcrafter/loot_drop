@@ -9,6 +9,7 @@ import de.castcrafter.lootdrop.Main;
 import de.castcrafter.lootdrop.duel.Duel;
 import de.castcrafter.lootdrop.duel.DuelVoteState;
 import de.castcrafter.lootdrop.gui.button.PlayerHeadButton;
+import de.castcrafter.lootdrop.utils.Chat;
 import de.castcrafter.lootdrop.utils.ItemUtils;
 import de.castcrafter.lootdrop.utils.SoundUtils;
 import net.kyori.adventure.sound.Sound;
@@ -102,17 +103,17 @@ public class DuelGui extends ChestGui {
 
 		switch (voteState) {
 			case VOTE_CLOSED:
-				voter.sendMessage(Component.text("Die Abstimmung wurde beendet.", NamedTextColor.RED));
+				Chat.sendMessage(voter, Component.text("Die Abstimmung wurde beendet.", NamedTextColor.RED));
 				playErrorClickSound(voter);
 				break;
 			case ALREADY_VOTED:
-				voter.sendMessage(Component.text("Du hast bereits abgestimmt.", NamedTextColor.RED));
+				Chat.sendMessage(voter, Component.text("Du hast bereits abgestimmt.", NamedTextColor.RED));
 				playErrorClickSound(voter);
 				break;
 			case SUCCESS:
-				voter.sendMessage(Component.text("Du hast für ", NamedTextColor.GREEN)
-										   .append(Component.text(player.getName(), NamedTextColor.YELLOW))
-										   .append(Component.text(" abgestimmt.", NamedTextColor.GREEN)));
+				Chat.sendMessage(voter, Component.text("Du hast für ", NamedTextColor.GREEN)
+												 .append(Component.text(player.getName(), NamedTextColor.YELLOW))
+												 .append(Component.text(" abgestimmt.", NamedTextColor.GREEN)));
 				playSuccessClickSound(voter);
 				break;
 		}

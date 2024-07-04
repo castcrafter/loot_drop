@@ -2,6 +2,7 @@ package de.castcrafter.lootdrop.command.commands.duel.subcommands;
 
 import de.castcrafter.lootdrop.duel.Duel;
 import de.castcrafter.lootdrop.duel.DuelManager;
+import de.castcrafter.lootdrop.utils.Chat;
 import dev.jorel.commandapi.CommandAPICommand;
 import dev.jorel.commandapi.arguments.PlayerArgument;
 import dev.jorel.commandapi.arguments.TimeArgument;
@@ -36,7 +37,7 @@ public class DuelCreateCommand extends CommandAPICommand {
 
 		executesPlayer((player, args) -> {
 			if (DuelManager.INSTANCE.getRunningDuel() != null) {
-				player.sendMessage(Component.text(
+				Chat.sendMessage(player, Component.text(
 						"Es läuft bereits ein Duell. Bitte beende dieses, bevor du ein " +
 						"neues starten kannst!", NamedTextColor.RED
 				));
@@ -52,7 +53,7 @@ public class DuelCreateCommand extends CommandAPICommand {
 					Arrays.stream(player.getInventory().getStorageContents())
 						  .filter(itemStack -> itemStack != null && !itemStack.getType().equals(
 								  Material.AIR)).toList();
-			
+
 			Duel runningDuel = new Duel(playerOne, playerTwo, rewards, voteDuration);
 			DuelManager.INSTANCE.setRunningDuel(runningDuel);
 

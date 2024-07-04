@@ -2,6 +2,7 @@ package de.castcrafter.lootdrop.command.commands.duel.subcommands;
 
 import de.castcrafter.lootdrop.duel.DuelFinishState;
 import de.castcrafter.lootdrop.duel.DuelManager;
+import de.castcrafter.lootdrop.utils.Chat;
 import dev.jorel.commandapi.CommandAPICommand;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -23,7 +24,7 @@ public class DuelStopCommand extends CommandAPICommand {
 
 		executesPlayer((player, args) -> {
 			if (DuelManager.INSTANCE.getRunningDuel() == null) {
-				player.sendMessage(Component.text(
+				Chat.sendMessage(player, Component.text(
 						"Aktuell läuft kein Duell, welches du beenden könntest!", NamedTextColor.RED
 				));
 

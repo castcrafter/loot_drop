@@ -2,6 +2,7 @@ package de.castcrafter.lootdrop.command.commands.event;
 
 import de.castcrafter.lootdrop.Messages;
 import de.castcrafter.lootdrop.command.commands.EventCommand;
+import de.castcrafter.lootdrop.utils.Chat;
 import dev.jorel.commandapi.CommandAPICommand;
 
 /**
@@ -23,7 +24,7 @@ public class EventCreateSubCommand extends CommandAPICommand {
 		executesPlayer((player, args) -> {
 			eventCommand.setEventLocation(player.getLocation());
 
-			player.sendMessage(Messages.eventHasBeenCreatedComponent());
+			Chat.sendMessage(player, Messages.eventHasBeenCreatedComponent());
 		});
 	}
 }

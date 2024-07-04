@@ -5,6 +5,7 @@ import de.castcrafter.lootdrop.config.LootDropConfig;
 import de.castcrafter.lootdrop.config.drops.HourlyDrop;
 import de.castcrafter.lootdrop.gui.drops.DropGui;
 import de.castcrafter.lootdrop.gui.drops.DropsGui;
+import de.castcrafter.lootdrop.utils.Chat;
 import de.castcrafter.lootdrop.utils.SoundUtils;
 import io.th0rgal.oraxen.api.OraxenItems;
 import net.kyori.adventure.text.Component;
@@ -93,25 +94,25 @@ public class DropHourButton extends GuiItem {
 	 */
 	public DropHourButton(Player forPlayer, HourlyDrop hourlyDrop) {
 		super(formItemStack(forPlayer, hourlyDrop), event -> {
-				  int currentHour = DropsGui.getCurrentHourSinceStart(LootDropConfig.INSTANCE.getStartedTimestamp(),
-																	  DropsGui.CURRENT_TIME
+				  int currentHour = DropsGui.getCurrentHourSinceStart(
+						  LootDropConfig.INSTANCE.getStartedTimestamp(),
+						  DropsGui.CURRENT_TIME
 				  );
 
 				  HumanEntity humanEntity = event.getWhoClicked();
 
 				  if (currentHour < hourlyDrop.getHour()) {
-					  humanEntity.sendMessage(
-							  Component.text("Diese Stunde ist noch nicht erreicht", NamedTextColor.RED));
+					  Chat.sendMessage(humanEntity, Component.text(
+							  "Diese Stunde ist noch nicht erreicht",
+							  NamedTextColor.RED
+					  ));
 					  SoundUtils.playSound(humanEntity, Sound.BLOCK_NOTE_BLOCK_BASS, .5f, 1f);
 					  return;
 				  }
 
 				  if (!hourlyDrop.canPlayerUse(humanEntity.getUniqueId())) {
-					  humanEntity.sendMessage(
-							  Component.text(
-									  "Du hast diese Stunde bereits geöffnet",
-									  NamedTextColor.RED
-							  ));
+					  Chat.sendMessage(
+							  humanEntity, Component.text("Du hast diese Stunde bereits geöffnet", NamedTextColor.RED));
 
 					  SoundUtils.playSound(humanEntity, Sound.BLOCK_NOTE_BLOCK_BASS, .5f, 1f);
 					  return;

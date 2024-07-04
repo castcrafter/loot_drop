@@ -3,6 +3,7 @@ package de.castcrafter.lootdrop.command.commands.duel.subcommands;
 import de.castcrafter.lootdrop.duel.Duel;
 import de.castcrafter.lootdrop.duel.DuelManager;
 import de.castcrafter.lootdrop.gui.duel.DuelGui;
+import de.castcrafter.lootdrop.utils.Chat;
 import dev.jorel.commandapi.CommandAPICommand;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -26,7 +27,7 @@ public class DuelVoteCommand extends CommandAPICommand {
 			Duel duel = DuelManager.INSTANCE.getRunningDuel();
 
 			if (duel == null) {
-				player.sendMessage(Component.text(
+				Chat.sendMessage(player, Component.text(
 						"Es läuft aktuell kein Duell, für das du abstimmen kannst!",
 						NamedTextColor.RED
 				));
@@ -35,7 +36,7 @@ public class DuelVoteCommand extends CommandAPICommand {
 			}
 
 			if (!duel.isVoteOpen()) {
-				player.sendMessage(Component.text(
+				Chat.sendMessage(player, Component.text(
 						"Die Abstimmung für dieses Duell ist bereits beendet!",
 						NamedTextColor.RED
 				));

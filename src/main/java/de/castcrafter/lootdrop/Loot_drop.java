@@ -1,6 +1,9 @@
 package de.castcrafter.lootdrop;
 
+import de.castcrafter.lootdrop.utils.Chat;
 import de.castcrafter.lootdrop.utils.SoundUtils;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -63,27 +66,33 @@ public class Loot_drop implements Listener, CommandExecutor {
 	@Override
 	public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
 		if (!( sender instanceof Player )) {
-			sender.sendMessage("This command can only be used by players.");
+			Chat.sendMessage(sender, Component.text("This command can only be used by players.", NamedTextColor.RED));
 			return true;
 		}
 
 		Player player = (Player) sender;
 		if (label.equalsIgnoreCase("copyloot")) {
 			if (args.length < 1) {
-				player.sendMessage("Please specify the loot type (good or bad).");
+				Chat.sendMessage(
+						player, Component.text("Please specify the loot type (good or bad).", NamedTextColor.RED));
 				return true;
 			}
 
 			String lootType = args[ 0 ].toLowerCase();
 			if (!lootType.equals("good") && !lootType.equals("bad")) {
-				player.sendMessage("Invalid loot type. Please enter 'good' or 'bad'.");
+				Chat.sendMessage(
+						player, Component.text("Invalid loot type. Please enter 'good' or 'bad'.", NamedTextColor.RED));
 				return true;
 			}
 
 			return copyLoot(player, lootType);
 		} else if (label.equalsIgnoreCase("summonloot")) {
 			if (args.length < 3) {
-				player.sendMessage("Please specify the y offset and the probabilities.");
+				Chat.sendMessage(
+						player, Component.text(
+								"Please specify the y offset and the probabilities.",
+								NamedTextColor.RED
+						));
 				return true;
 			}
 
@@ -91,7 +100,8 @@ public class Loot_drop implements Listener, CommandExecutor {
 			try {
 				yOffset = Integer.parseInt(args[ 0 ]);
 			} catch (NumberFormatException e) {
-				player.sendMessage("Invalid y offset. Please enter a number.");
+				Chat.sendMessage(
+						player, Component.text("Invalid y offset. Please enter a number.", NamedTextColor.RED));
 				return true;
 			}
 
@@ -100,7 +110,8 @@ public class Loot_drop implements Listener, CommandExecutor {
 				goodProbability = Double.parseDouble(args[ 1 ]);
 				badProbability = Double.parseDouble(args[ 2 ]);
 			} catch (NumberFormatException e) {
-				player.sendMessage("Invalid probabilities. Please enter numbers.");
+				Chat.sendMessage(
+						player, Component.text("Invalid probabilities. Please enter numbers.", NamedTextColor.RED));
 				return true;
 			}
 
@@ -191,7 +202,7 @@ public class Loot_drop implements Listener, CommandExecutor {
 	private boolean copyLoot(Player player, String lootType) {
 		Block targetBlock = player.getTargetBlockExact(5);
 		if (targetBlock == null || targetBlock.getType() != Material.CHEST) {
-			player.sendMessage("You must be looking at a chest.");
+			Chat.sendMessage(player, Component.text("You must be looking at a chest.", NamedTextColor.RED));
 			return true;
 		}
 
@@ -205,7 +216,11 @@ public class Loot_drop implements Listener, CommandExecutor {
 			}
 		}
 
-		player.sendMessage("Loot copied from the chest to the " + lootType + " loot table.");
+		Chat.sendMessage(
+				player, Component.text(
+						"Loot copied from the chest to the " + lootType + " loot table.",
+						NamedTextColor.GREEN
+				));
 		return true;
 	}
 
@@ -214,7 +229,8 @@ public class Loot_drop implements Listener, CommandExecutor {
 		this.goodProbability = goodProbability;
 		this.badProbability = badProbability;
 		if (goodProbability + badProbability != 1.0) {
-			player.sendMessage("Invalid probabilities. They should add up to 1.0.");
+			Chat.sendMessage(
+					player, Component.text("Invalid probabilities. They should add up to 1.0.", NamedTextColor.RED));
 			return true;
 		}
 

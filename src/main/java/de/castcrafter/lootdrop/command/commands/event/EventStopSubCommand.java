@@ -2,6 +2,7 @@ package de.castcrafter.lootdrop.command.commands.event;
 
 import de.castcrafter.lootdrop.Messages;
 import de.castcrafter.lootdrop.command.commands.EventCommand;
+import de.castcrafter.lootdrop.utils.Chat;
 import dev.jorel.commandapi.CommandAPICommand;
 import org.bukkit.Bukkit;
 
@@ -23,14 +24,14 @@ public class EventStopSubCommand extends CommandAPICommand {
 
 		executes((sender, args) -> {
 			if (!eventCommand.isEventStarted()) {
-				sender.sendMessage(Messages.noEventStartedComponent());
+				Chat.sendMessage(sender, Messages.noEventStartedComponent());
 				return;
 			}
 
 			eventCommand.setEventStarted(false);
 			eventCommand.setEventLocation(null);
 
-			Bukkit.broadcast(Messages.eventHasBeenStoppedComponent());
+			Bukkit.broadcast(Chat.prefix().append(Messages.eventHasBeenStoppedComponent()));
 		});
 	}
 }

@@ -2,6 +2,7 @@ package de.castcrafter.lootdrop.command.commands;
 
 import de.castcrafter.lootdrop.Messages;
 import de.castcrafter.lootdrop.listener.listeners.SpecialItemListener;
+import de.castcrafter.lootdrop.utils.Chat;
 import dev.jorel.commandapi.CommandAPICommand;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
@@ -27,14 +28,14 @@ public class MakeSpecialCommand extends CommandAPICommand {
 			ItemStack mainHand = player.getInventory().getItemInMainHand();
 
 			if (mainHand.getType().equals(Material.AIR)) {
-				player.sendMessage(Messages.youNeedAnItemInYourHandComponent());
+				Chat.sendMessage(player, Messages.youNeedAnItemInYourHandComponent());
 				return;
 			}
 
 			ItemMeta itemMeta = mainHand.getItemMeta();
 
 			if (itemMeta == null) {
-				player.sendMessage(Messages.itemHasNoMetaComponent());
+				Chat.sendMessage(player, Messages.itemHasNoMetaComponent());
 				return;
 			}
 
@@ -43,7 +44,7 @@ public class MakeSpecialCommand extends CommandAPICommand {
 
 			mainHand.setItemMeta(itemMeta);
 
-			player.sendMessage(Messages.itemIsNowSpecialComponent());
+			Chat.sendMessage(player, Messages.itemIsNowSpecialComponent());
 		});
 	}
 }
