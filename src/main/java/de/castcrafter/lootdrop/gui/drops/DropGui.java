@@ -7,6 +7,7 @@ import de.castcrafter.lootdrop.config.drops.HourlyDropRecipe;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.entity.HumanEntity;
+import org.bukkit.event.inventory.InventoryAction;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.MerchantInventory;
@@ -58,6 +59,15 @@ public class DropGui extends MerchantGui {
 		});
 
 		setOnTopClick(event -> {
+			InventoryAction[] allowedActions = new InventoryAction[] {
+					InventoryAction.PICKUP_ALL,
+			};
+
+			if (Arrays.stream(allowedActions).noneMatch(action -> action.equals(event.getAction()))) {
+				event.setCancelled(true);
+				return;
+			}
+
 			ItemStack currentItem = event.getCurrentItem();
 
 			if (currentItem == null) {

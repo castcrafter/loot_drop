@@ -2,19 +2,21 @@ package de.castcrafter.lootdrop.duel;
 
 import de.castcrafter.lootdrop.Main;
 import de.castcrafter.lootdrop.utils.SoundUtils;
-import de.castcrafter.lootdrop.utils.TimeUtils;
-import net.kyori.adventure.bossbar.BossBar;
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.format.NamedTextColor;
+import kr.toxicity.hud.api.BetterHud;
+import kr.toxicity.hud.api.hud.Hud;
+import kr.toxicity.hud.api.player.HudPlayer;
 import org.bukkit.Bukkit;
 import org.bukkit.Sound;
-import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.HandlerList;
+import org.bukkit.event.Listener;
+import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.scheduler.BukkitRunnable;
 
 /**
  * The type Duel vote timer.
  */
-public class DuelVoteTimer extends BukkitRunnable {
+public class DuelVoteTimer extends BukkitRunnable implements Listener {
 
 	private final int[] plingSounds = new int[] {
 			120, 90, 60, 30, 10, 5, 4, 3, 2, 1
@@ -23,8 +25,6 @@ public class DuelVoteTimer extends BukkitRunnable {
 	private final Duel duel;
 	private final int maxSeconds;
 	private int currentSeconds;
-
-	private BossBar bossBar;
 
 	/**
 	 * Instantiates a new Duel vote timer.
@@ -37,6 +37,8 @@ public class DuelVoteTimer extends BukkitRunnable {
 
 		this.currentSeconds = maxSeconds + 1;
 		this.maxSeconds = maxSeconds;
+
+		Bukkit.getPluginManager().registerEvents(this, Main.getInstance());
 	}
 
 	/**
@@ -52,8 +54,6 @@ public class DuelVoteTimer extends BukkitRunnable {
 	public void run() {
 		currentSeconds--;
 
-		updateBossBar();
-		updateActionBar();
 		plingSound();
 
 		if (currentSeconds <= 0) {
@@ -76,64 +76,56 @@ public class DuelVoteTimer extends BukkitRunnable {
 	}
 
 	/**
-	 * Update action bar.
-	 */
-	public void updateActionBar() {
-		Bukkit.getOnlinePlayers().forEach(player -> {
-			player.sendActionBar(Component.text("Duell-Abstimmung: ", NamedTextColor.GOLD)
-										  .append(TimeUtils.formatSeconds(currentSeconds)));
-		});
-	}
-
-	/**
-	 * Update boss bar.
-	 */
-	public void updateBossBar() {
-		Player playerOne = duel.getPlayerOne();
-		Player playerTwo = duel.getPlayerTwo();
-
-		int playerOnePercentage = duel.getVotesPercentage(playerOne);
-		int playerTwoPercentage = 100 - playerOnePercentage;
-
-		String playerOneString = playerOne.getName() + " (" + playerOnePercentage + "%)";
-		String playerTwoString = playerTwo.getName() + " (" + playerTwoPercentage + "%)";
-
-		if (this.bossBar == null) {
-			this.bossBar =
-					BossBar.bossBar(Component.text(playerOneString + " vs " + playerTwoString), 1,
-									BossBar.Color.GREEN, BossBar.Overlay.PROGRESS
-					);
-		}
-
-		this.bossBar.name(Component.text(playerOneString + " vs " + playerTwoString));
-		this.bossBar.progress((float) playerOnePercentage / 100);
-
-		Bukkit.getOnlinePlayers().forEach(player -> {
-			player.showBossBar(this.bossBar);
-		});
-	}
-
-	/**
 	 * Start.
 	 */
 	public void start() {
 		this.runTaskTimer(Main.getInstance(), 0, 20L);
+
+		Hud hud = getHud();
+
+		for (HudPlayer onlinePlayer :
+				Bukkit.getOnlinePlayers().stream().map(BetterHud.getInstance()::getHudPlayer).toList()) {
+			onlinePlayer.getHudObjects().add(hud);
+		}
+	}
+
+	/**
+	 * On quit.
+	 *
+	 * @param event the event
+	 */
+	@EventHandler
+	public void onQuit(PlayerQuitEvent event) {
+		Hud hud = getHud();
+		BetterHud.getInstance().getHudPlayer(event.getPlayer()).getHudObjects().remove(hud);
 	}
 
 	/**
 	 * Stop.
 	 */
 	public void stop() {
-		if (this.bossBar != null) {
-			Bukkit.getOnlinePlayers().forEach(player -> {
-				player.hideBossBar(this.bossBar);
-			});
+		Hud hud = getHud();
+
+		for (HudPlayer onlinePlayer :
+				Bukkit.getOnlinePlayers().stream().map(BetterHud.getInstance()::getHudPlayer).toList()) {
+			onlinePlayer.getHudObjects().remove(hud);
 		}
+
+		HandlerList.unregisterAll(this);
 
 		try {
 			this.cancel();
 		} catch (IllegalStateException ignore) {
 		}
+	}
+
+	/**
+	 * Gets hud.
+	 *
+	 * @return the hud
+	 */
+	private Hud getHud() {
+		return BetterHud.getInstance().getHudManager().getHud("voting_hud");
 	}
 
 	/**

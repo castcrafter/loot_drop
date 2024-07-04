@@ -17,6 +17,7 @@ repositories {
     maven("https://repo.maven.apache.org/maven2/")
     maven("https://repo.extendedclip.com/content/repositories/placeholderapi/")
     maven("https://repo.oraxen.com/releases")
+    maven("https://jitpack.io")
 }
 
 dependencies {
@@ -24,6 +25,7 @@ dependencies {
     compileOnlyApi(libs.commandapi)
     compileOnlyApi(libs.placeholder.api)
     compileOnlyApi(libs.oraxen)
+    compileOnlyApi(libs.betterhud)
 
     api(libs.inventory.framework)
     api(libs.configurate.core)

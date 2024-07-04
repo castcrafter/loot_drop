@@ -1,6 +1,10 @@
 package de.castcrafter.lootdrop.placeholder;
 
+import de.castcrafter.lootdrop.duel.Duel;
+import de.castcrafter.lootdrop.duel.DuelManager;
+import de.castcrafter.lootdrop.duel.DuelVoteTimer;
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
+import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -44,9 +48,79 @@ public class LootDropPlaceholderExpansion extends PlaceholderExpansion {
 			return null;
 		}
 
-		if (paramsArray[ 0 ].equalsIgnoreCase("name") && paramsArray.length >= 2) {
-			return Arrays.stream(Arrays.copyOfRange(paramsArray, 1, paramsArray.length)).reduce((a, b) -> a + "_" + b)
+		if (params.equalsIgnoreCase("unique_joins")) {
+			return String.format("%04d", Bukkit.getOfflinePlayers().length);
+		} else if (params.equalsIgnoreCase("current_players")) {
+			return String.format("%04d", Bukkit.getOnlinePlayers().size());
+		} else if (paramsArray[ 0 ].equalsIgnoreCase("name") && paramsArray.length >= 2) {
+			return Arrays.stream(Arrays.copyOfRange(paramsArray, 1, paramsArray.length))
+						 .reduce((a, b) -> a + "_" + b)
 						 .orElse("");
+		} else if (params.equalsIgnoreCase("vote_timer")) {
+			Duel runningDuel = DuelManager.INSTANCE.getRunningDuel();
+
+			if (runningDuel == null || !runningDuel.isVoteOpen()) {
+				return "Kein Vote";
+			}
+
+			DuelVoteTimer timer = runningDuel.getVoteTimer();
+
+			if (timer == null) {
+				return "Kein Timer";
+			}
+
+			return String.format(
+					"%02d:%02d:%02d", timer.getCurrentSeconds() / 3600, ( timer.getCurrentSeconds() % 3600 ) / 60,
+					timer.getCurrentSeconds() % 60
+			);
+		} else if (params.equalsIgnoreCase("vote_player_one_name")) {
+			Duel runningDuel = DuelManager.INSTANCE.getRunningDuel();
+
+			if (runningDuel == null || !runningDuel.isVoteOpen()) {
+				return "Kein Vote";
+			}
+
+			return runningDuel.getPlayerOne().getName();
+		} else if (params.equalsIgnoreCase("vote_player_two_name")) {
+			Duel runningDuel = DuelManager.INSTANCE.getRunningDuel();
+
+			if (runningDuel == null || !runningDuel.isVoteOpen()) {
+				return "Kein Vote";
+			}
+
+			return runningDuel.getPlayerTwo().getName();
+		} else if (params.equalsIgnoreCase("vote_player_one_votes")) {
+			Duel runningDuel = DuelManager.INSTANCE.getRunningDuel();
+
+			if (runningDuel == null || !runningDuel.isVoteOpen()) {
+				return "Kein Vote";
+			}
+
+			return String.valueOf(runningDuel.getVotes(runningDuel.getPlayerOne()));
+		} else if (params.equalsIgnoreCase("vote_player_two_votes")) {
+			Duel runningDuel = DuelManager.INSTANCE.getRunningDuel();
+
+			if (runningDuel == null || !runningDuel.isVoteOpen()) {
+				return "Kein Vote";
+			}
+
+			return String.valueOf(runningDuel.getVotes(runningDuel.getPlayerTwo()));
+		} else if (params.equalsIgnoreCase("vote_player_one_percentage")) {
+			Duel runningDuel = DuelManager.INSTANCE.getRunningDuel();
+
+			if (runningDuel == null || !runningDuel.isVoteOpen()) {
+				return "Kein Vote";
+			}
+
+			return String.valueOf(runningDuel.getVotesPercentage(runningDuel.getPlayerOne()));
+		} else if (params.equalsIgnoreCase("vote_player_two_percentage")) {
+			Duel runningDuel = DuelManager.INSTANCE.getRunningDuel();
+
+			if (runningDuel == null || !runningDuel.isVoteOpen()) {
+				return "Kein Vote";
+			}
+
+			return String.valueOf(runningDuel.getVotesPercentage(runningDuel.getPlayerTwo()));
 		}
 
 		return null;
