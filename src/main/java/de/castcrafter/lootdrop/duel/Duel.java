@@ -10,10 +10,6 @@ import net.kyori.adventure.title.Title;
 import org.bukkit.Bukkit;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.HandlerList;
-import org.bukkit.event.Listener;
-import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
 
@@ -27,7 +23,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 /**
  * The type Duel.
  */
-public class Duel implements Listener {
+public class Duel {
 
 	private final Player playerOne;
 	private final Player playerTwo;
@@ -58,17 +54,6 @@ public class Duel implements Listener {
 
 		this.voteTimer = new DuelVoteTimer(this, voteDuration);
 		this.voteTimer.start();
-
-		Bukkit.getPluginManager().registerEvents(this, Main.getInstance());
-	}
-
-	@EventHandler
-	public void onQuit(PlayerQuitEvent event) {
-		Player player = event.getPlayer();
-
-		if (player.equals(playerOne) || player.equals(playerTwo)) {
-			finishDuel(DuelFinishState.PLAYER_LEFT);
-		}
 	}
 
 	/**
@@ -189,8 +174,6 @@ public class Duel implements Listener {
 	 */
 	@SuppressWarnings("DuplicatedCode")
 	public void finishDuel(DuelFinishState state) {
-		HandlerList.unregisterAll(this);
-
 		if (voteTimer != null) {
 			voteTimer.stop();
 		}
