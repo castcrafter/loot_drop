@@ -41,6 +41,9 @@ public class Main extends JavaPlugin {
 		listenerManager.registerListeners();
 
 		oldMain.onEnable();
+
+		LootDropConfig.INSTANCE.loadAndStartTimerIfExistsInConfig();
+
 		new LootDropPlaceholderExpansion().register();
 	}
 

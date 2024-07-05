@@ -18,6 +18,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -37,7 +38,7 @@ public class DropHourButton extends GuiItem {
 	 */
 	private static ItemStack formItemStack(Player forPlayer, HourlyDrop hourlyDrop) {
 		int currentHourSinceStart =
-				DropsGui.getCurrentHourSinceStart(LootDropConfig.INSTANCE.getStartedTimestamp(), DropsGui.CURRENT_TIME);
+				DropsGui.getCurrentHourSinceStart(LootDropConfig.INSTANCE.getStartedTimestamp(), ZonedDateTime.now());
 		boolean playerOpenedDrop = !hourlyDrop.canPlayerUse(forPlayer.getUniqueId());
 
 		String oraxenName;
@@ -96,7 +97,7 @@ public class DropHourButton extends GuiItem {
 		super(formItemStack(forPlayer, hourlyDrop), event -> {
 				  int currentHour = DropsGui.getCurrentHourSinceStart(
 						  LootDropConfig.INSTANCE.getStartedTimestamp(),
-						  DropsGui.CURRENT_TIME
+						  ZonedDateTime.now()
 				  );
 
 				  HumanEntity humanEntity = event.getWhoClicked();

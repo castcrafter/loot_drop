@@ -2,11 +2,13 @@ package de.castcrafter.lootdrop.config;
 
 import de.castcrafter.lootdrop.Main;
 import de.castcrafter.lootdrop.config.drops.HourlyDrop;
+import de.castcrafter.lootdrop.timer.LootDropTimer;
 import net.kyori.adventure.text.logger.slf4j.ComponentLogger;
 import org.spongepowered.configurate.CommentedConfigurationNode;
 import org.spongepowered.configurate.objectmapping.ConfigSerializable;
 import org.spongepowered.configurate.yaml.YamlConfigurationLoader;
 
+import java.time.Duration;
 import java.time.Instant;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
@@ -25,13 +27,28 @@ public class LootDropConfig {
 	private transient YamlConfigurationLoader loader;
 	private transient CommentedConfigurationNode node;
 
-	private long startedTimestampSeconds = ZonedDateTime.now().toEpochSecond();
+	private long startedTimestampSeconds;
+	private long endTimestampSeconds;
+	private transient LootDropTimer timer;
+
 	private List<HourlyDrop> drops = new ArrayList<>();
 
 	/**
 	 * Instantiates a new Loot drop config.
 	 */
 	public LootDropConfig() {
+	}
+
+	/**
+	 * Load and start timer if exists.
+	 */
+	public void loadAndStartTimerIfExistsInConfig() {
+		if (timer == null) {
+			setTimer(new LootDropTimer(
+					Duration.ofSeconds(getEndTimestamp().toEpochSecond() - ZonedDateTime.now().toEpochSecond())));
+
+			getTimer().start();
+		}
 	}
 
 	/**
@@ -60,6 +77,7 @@ public class LootDropConfig {
 
 			drops = fetchedConfig.drops;
 			startedTimestampSeconds = fetchedConfig.startedTimestampSeconds;
+			endTimestampSeconds = fetchedConfig.endTimestampSeconds;
 		} catch (Exception exception) {
 			LOGGER.error("Failed to load configuration", exception);
 		}
@@ -100,7 +118,43 @@ public class LootDropConfig {
 	 *
 	 * @param startedTimestamp the started timestamp
 	 */
-	public void setStartedTimestamp(ZonedDateTime startedTimestamp) {
+	public void setStartTimestamp(ZonedDateTime startedTimestamp) {
 		this.startedTimestampSeconds = startedTimestamp.toEpochSecond();
+	}
+
+	/**
+	 * Sets end timestamp.
+	 *
+	 * @param endTimestamp the end timestamp
+	 */
+	public void setEndTimestamp(ZonedDateTime endTimestamp) {
+		this.endTimestampSeconds = endTimestamp.toEpochSecond();
+	}
+
+	/**
+	 * Gets end timestamp.
+	 *
+	 * @return the end timestamp
+	 */
+	public ZonedDateTime getEndTimestamp() {
+		return ZonedDateTime.ofInstant(Instant.ofEpochSecond(endTimestampSeconds), ZoneId.systemDefault());
+	}
+
+	/**
+	 * Gets timer.
+	 *
+	 * @return the timer
+	 */
+	public LootDropTimer getTimer() {
+		return timer;
+	}
+
+	/**
+	 * Sets timer.
+	 *
+	 * @param timer the timer
+	 */
+	public void setTimer(LootDropTimer timer) {
+		this.timer = timer;
 	}
 }

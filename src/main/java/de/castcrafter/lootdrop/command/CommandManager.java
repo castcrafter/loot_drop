@@ -5,6 +5,7 @@ import de.castcrafter.lootdrop.command.commands.EventJoinCommand;
 import de.castcrafter.lootdrop.command.commands.MakeSpecialCommand;
 import de.castcrafter.lootdrop.command.commands.drops.DropsCommand;
 import de.castcrafter.lootdrop.command.commands.duel.DuelCommand;
+import de.castcrafter.lootdrop.command.commands.lootdrop.LootDropCommand;
 import de.castcrafter.lootdrop.command.commands.seamine.SeamineCommand;
 import dev.jorel.commandapi.CommandAPI;
 import dev.jorel.commandapi.CommandAPICommand;
@@ -31,6 +32,7 @@ public class CommandManager {
 		this.commands.add(new MakeSpecialCommand("makespecial"));
 		this.commands.add(new DuelCommand("duel"));
 		this.commands.add(new DropsCommand("drops"));
+		this.commands.add(new LootDropCommand("lootdrop"));
 	}
 
 	/**

@@ -1,4 +1,4 @@
-package de.castcrafter.lootdrop.command.commands.drops.subcommands;
+package de.castcrafter.lootdrop.command.commands.lootdrop.subcommands;
 
 import de.castcrafter.lootdrop.config.LootDropConfig;
 import de.castcrafter.lootdrop.utils.Chat;
@@ -6,11 +6,20 @@ import dev.jorel.commandapi.CommandAPICommand;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 
-public class DropsReloadConfigCommand extends CommandAPICommand {
-	public DropsReloadConfigCommand(String commandName) {
+/**
+ * The type Loot drop reload config command.
+ */
+public class LootDropReloadConfigCommand extends CommandAPICommand {
+	
+	/**
+	 * Instantiates a new Loot drop reload config command.
+	 *
+	 * @param commandName the command name
+	 */
+	public LootDropReloadConfigCommand(String commandName) {
 		super(commandName);
 
-		withPermission("lootdrop.command.drops.reloadconfig");
+		withPermission("lootdrop.command.lootdrop.reloadconfig");
 
 		executesPlayer((player, args) -> {
 			LootDropConfig config = LootDropConfig.INSTANCE;

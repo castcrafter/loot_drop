@@ -1,8 +1,10 @@
 package de.castcrafter.lootdrop.placeholder;
 
+import de.castcrafter.lootdrop.config.LootDropConfig;
 import de.castcrafter.lootdrop.duel.Duel;
 import de.castcrafter.lootdrop.duel.DuelManager;
 import de.castcrafter.lootdrop.duel.DuelVoteTimer;
+import de.castcrafter.lootdrop.timer.LootDropTimer;
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
@@ -121,6 +123,17 @@ public class LootDropPlaceholderExpansion extends PlaceholderExpansion {
 			}
 
 			return String.valueOf(runningDuel.getVotesPercentage(runningDuel.getPlayerTwo()));
+		} else if (params.equalsIgnoreCase("timer")) {
+			LootDropTimer timer = LootDropConfig.INSTANCE.getTimer();
+
+			if (timer == null) {
+				return "00:00:00";
+			}
+
+			return String.format(
+					"%02d:%02d:%02d", timer.getSeconds() / 3600, ( timer.getSeconds() % 3600 ) / 60,
+					timer.getSeconds() % 60
+			);
 		}
 
 		return null;

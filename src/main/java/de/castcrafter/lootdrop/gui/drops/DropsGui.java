@@ -16,7 +16,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
-import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -25,17 +24,6 @@ import java.util.List;
  * The type Drops gui.
  */
 public class DropsGui extends ChestGui {
-
-	public static ZonedDateTime CURRENT_TIME = ZonedDateTime.of(
-			2024,
-			7,
-			2,
-			18,
-			0,
-			0,
-			0,
-			ZoneId.of("Europe/Berlin")
-	);
 
 	private final Player openedForPlayer;
 
