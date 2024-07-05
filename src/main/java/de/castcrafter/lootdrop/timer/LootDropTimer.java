@@ -1,10 +1,19 @@
 package de.castcrafter.lootdrop.timer;
 
 import de.castcrafter.lootdrop.Main;
+import de.castcrafter.lootdrop.config.LootDropConfig;
+import de.castcrafter.lootdrop.utils.Chat;
+import de.castcrafter.lootdrop.utils.SoundUtils;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.logger.slf4j.ComponentLogger;
+import org.bukkit.Bukkit;
+import org.bukkit.Sound;
+import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.time.Duration;
+import java.time.ZonedDateTime;
 
 /**
  * The type Loot drop timer.
@@ -29,6 +38,27 @@ public class LootDropTimer extends BukkitRunnable {
 	@Override
 	public void run() {
 		seconds--;
+
+		ZonedDateTime currentTime = ZonedDateTime.now();
+		ZonedDateTime startTime = LootDropConfig.INSTANCE.getStartedTimestamp();
+
+		long secondsSinceStart = Duration.between(startTime, currentTime).getSeconds();
+
+		if (secondsSinceStart % 3600 == 0) {
+			long hours = secondsSinceStart / 3600;
+
+			for (Player player : Bukkit.getOnlinePlayers()) {
+				Chat.sendMessage(
+						player,
+						Component.text("Die Stunde ", NamedTextColor.GREEN).append(Component.text(
+								hours,
+								NamedTextColor.GOLD
+						)).append(Component.text(" sind geöffnet!", NamedTextColor.GREEN))
+				);
+
+				SoundUtils.playSound(player, Sound.ENTITY_CHICKEN_EGG, 1, 1);
+			}
+		}
 
 		if (seconds <= 0) {
 			this.stop();
