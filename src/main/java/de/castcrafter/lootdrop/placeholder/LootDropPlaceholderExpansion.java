@@ -11,6 +11,7 @@ import org.bukkit.OfflinePlayer;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.time.ZonedDateTime;
 import java.util.Arrays;
 
 /**
@@ -130,8 +131,8 @@ public class LootDropPlaceholderExpansion extends PlaceholderExpansion {
 				return "00:00:00";
 			}
 
-			if (timer.isPaused()) {
-				return "Pausiert";
+			if (LootDropConfig.INSTANCE.getEndTimestamp().isBefore(ZonedDateTime.now())) {
+				return "00:00:00";
 			}
 
 			return String.format(
