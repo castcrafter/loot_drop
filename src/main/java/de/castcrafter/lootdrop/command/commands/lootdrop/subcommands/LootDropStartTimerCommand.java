@@ -12,9 +12,9 @@ import java.time.Duration;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 
-public class LootDropStartCommand extends CommandAPICommand {
+public class LootDropStartTimerCommand extends CommandAPICommand {
 
-	public LootDropStartCommand(String commandName) {
+	public LootDropStartTimerCommand(String commandName) {
 		super(commandName);
 
 		withPermission("lootdrop.command.lootdrop.start");

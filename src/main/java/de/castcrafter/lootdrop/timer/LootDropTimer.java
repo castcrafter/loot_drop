@@ -14,8 +14,6 @@ public class LootDropTimer extends BukkitRunnable {
 	private static final ComponentLogger LOGGER = ComponentLogger.logger(LootDropTimer.class);
 
 	private final long maxSeconds;
-
-	private boolean paused;
 	private long seconds;
 
 	/**
@@ -26,15 +24,10 @@ public class LootDropTimer extends BukkitRunnable {
 	public LootDropTimer(Duration duration) {
 		this.maxSeconds = duration.getSeconds();
 		this.seconds = this.maxSeconds + 1;
-		this.paused = false;
 	}
 
 	@Override
 	public void run() {
-		if (paused) {
-			return;
-		}
-
 		seconds--;
 
 		if (seconds <= 0) {
@@ -98,23 +91,5 @@ public class LootDropTimer extends BukkitRunnable {
 		} catch (Exception ignored) {
 			return false;
 		}
-	}
-
-	/**
-	 * Sets paused.
-	 *
-	 * @param paused the paused
-	 */
-	public void setPaused(boolean paused) {
-		this.paused = paused;
-	}
-
-	/**
-	 * Is paused boolean.
-	 *
-	 * @return the boolean
-	 */
-	public boolean isPaused() {
-		return paused;
 	}
 }

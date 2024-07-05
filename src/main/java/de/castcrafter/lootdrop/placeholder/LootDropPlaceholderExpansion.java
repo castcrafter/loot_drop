@@ -130,6 +130,10 @@ public class LootDropPlaceholderExpansion extends PlaceholderExpansion {
 				return "00:00:00";
 			}
 
+			if (timer.isPaused()) {
+				return "Pausiert";
+			}
+
 			return String.format(
 					"%02d:%02d:%02d", timer.getSeconds() / 3600, ( timer.getSeconds() % 3600 ) / 60,
 					timer.getSeconds() % 60
