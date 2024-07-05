@@ -96,8 +96,7 @@ public class DuelVoteTimer extends BukkitRunnable implements Listener {
 	 */
 	@EventHandler
 	public void onQuit(PlayerQuitEvent event) {
-		Hud hud = getHud();
-		BetterHud.getInstance().getHudPlayer(event.getPlayer()).getHudObjects().remove(hud);
+		BetterHud.getInstance().getHudPlayer(event.getPlayer()).getHudObjects().remove(getHud());
 	}
 
 	/**
