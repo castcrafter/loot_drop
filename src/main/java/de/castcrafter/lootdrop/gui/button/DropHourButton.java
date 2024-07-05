@@ -93,7 +93,7 @@ public class DropHourButton extends GuiItem {
 	 *
 	 * @param hourlyDrop the hourly drop
 	 */
-	public DropHourButton(Player forPlayer, HourlyDrop hourlyDrop) {
+	public DropHourButton(DropsGui dropsGui, Player forPlayer, HourlyDrop hourlyDrop) {
 		super(formItemStack(forPlayer, hourlyDrop), event -> {
 				  int currentHour = DropsGui.getCurrentHourSinceStart(
 						  LootDropConfig.INSTANCE.getStartedTimestamp(),
@@ -119,7 +119,7 @@ public class DropHourButton extends GuiItem {
 					  return;
 				  }
 
-				  new DropGui(humanEntity, hourlyDrop).show(humanEntity);
+				  new DropGui(dropsGui, humanEntity, hourlyDrop).show(humanEntity);
 			  }
 		);
 	}

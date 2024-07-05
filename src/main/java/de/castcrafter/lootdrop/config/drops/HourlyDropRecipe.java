@@ -51,6 +51,22 @@ public class HourlyDropRecipe {
 		this.maxUses = maxUses;
 	}
 
+	/**
+	 * Increase player uses.
+	 *
+	 * @param uuid the uuid
+	 */
+	public void increasePlayerUses(UUID uuid) {
+		playerUses.put(uuid, playerUses.getOrDefault(uuid, 0) + 1);
+	}
+
+	/**
+	 * Gets player uses.
+	 *
+	 * @param uuid the uuid
+	 *
+	 * @return the player uses
+	 */
 	public int getPlayerUses(UUID uuid) {
 		return playerUses.getOrDefault(uuid, 0);
 	}

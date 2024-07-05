@@ -78,7 +78,7 @@ public class DropsGui extends ChestGui {
 	 *
 	 * @param buttons the buttons
 	 */
-	public void setBackItem(PagingButtons buttons) {
+	public static void setBackItem(PagingButtons buttons) {
 		ItemStack previous = OraxenItems.getItemById("daily_reward_previous").build();
 		ItemMeta itemMeta = previous.getItemMeta();
 
@@ -99,7 +99,7 @@ public class DropsGui extends ChestGui {
 	 *
 	 * @param buttons the buttons
 	 */
-	public void setForwardItem(PagingButtons buttons) {
+	public static void setForwardItem(PagingButtons buttons) {
 		ItemStack next = OraxenItems.getItemById("daily_reward_next").build();
 		ItemMeta itemMeta = next.getItemMeta();
 
@@ -123,6 +123,6 @@ public class DropsGui extends ChestGui {
 	 * @return the paginated pane
 	 */
 	public GuiItem getHourGuiItem(HourlyDrop hourlyDrop) {
-		return new DropHourButton(openedForPlayer, hourlyDrop);
+		return new DropHourButton(this, openedForPlayer, hourlyDrop);
 	}
 }

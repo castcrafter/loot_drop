@@ -187,8 +187,8 @@ public class HourlyDropItemStack {
 			}
 		}
 
-		if (itemMeta != null) {
-			itemMeta.setUnbreakable(unbreakable);
+		if (itemMeta != null && unbreakable) {
+			itemMeta.setUnbreakable(true);
 		}
 
 		itemStack.setItemMeta(itemMeta);

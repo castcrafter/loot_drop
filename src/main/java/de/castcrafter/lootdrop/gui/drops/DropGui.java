@@ -1,106 +1,97 @@
 package de.castcrafter.lootdrop.gui.drops;
 
-import com.github.stefvanschie.inventoryframework.adventuresupport.ComponentHolder;
-import com.github.stefvanschie.inventoryframework.gui.type.MerchantGui;
+import com.github.stefvanschie.inventoryframework.gui.GuiItem;
+import com.github.stefvanschie.inventoryframework.gui.type.ChestGui;
+import com.github.stefvanschie.inventoryframework.pane.PaginatedPane;
+import com.github.stefvanschie.inventoryframework.pane.StaticPane;
+import com.github.stefvanschie.inventoryframework.pane.component.PagingButtons;
+import com.github.stefvanschie.inventoryframework.pane.util.Slot;
 import de.castcrafter.lootdrop.config.drops.HourlyDrop;
 import de.castcrafter.lootdrop.config.drops.HourlyDropRecipe;
+import io.th0rgal.oraxen.api.OraxenItems;
 import net.kyori.adventure.text.Component;
-import org.bukkit.Material;
+import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.entity.HumanEntity;
-import org.bukkit.event.inventory.InventoryAction;
-import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.MerchantInventory;
-import org.bukkit.inventory.MerchantRecipe;
-
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
+import org.bukkit.inventory.meta.ItemMeta;
 
 /**
  * The type Drop gui.
  */
-public class DropGui extends MerchantGui {
+public class DropGui extends ChestGui {
+
+	private final DropsGui dropsGui;
+	private final HumanEntity openedForPlayer;
+	private final HourlyDrop hourlyDrop;
+
 	/**
 	 * Instantiates a new Drop gui.
 	 *
+	 * @param dropsGui        the drops gui
 	 * @param openedForPlayer the opened for player
 	 * @param hourlyDrop      the hourly drop
 	 */
-	public DropGui(HumanEntity openedForPlayer, HourlyDrop hourlyDrop) {
-		super(ComponentHolder.of(Component.text("Stunde " + hourlyDrop.getHour() + " Trades")));
+	public DropGui(DropsGui dropsGui, HumanEntity openedForPlayer, HourlyDrop hourlyDrop) {
+		super(6, "<shift:-8><glyph:daily_rewards_ui>");
 
-		List<MerchantRecipe> recipes = hourlyDrop.getMerchantRecipes(openedForPlayer.getUniqueId());
-		recipes.forEach(this::addTrade);
+		this.dropsGui = dropsGui;
+		this.openedForPlayer = openedForPlayer;
+		this.hourlyDrop = hourlyDrop;
 
-		setOnClose(event -> {
-			Inventory inventory = event.getInventory();
+		setOnGlobalClick(event -> event.setCancelled(true));
+		setOnGlobalDrag(event -> event.setCancelled(true));
 
-			if (!( inventory instanceof MerchantInventory merchantInventory )) {
-				return;
+		StaticPane staticPane = new StaticPane(0, 5, 9, 1);
+		staticPane.addItem(getBackItem(), 4, 0);
+
+		addPane(staticPane);
+
+		PaginatedPane paginatedPane = new PaginatedPane(1, 2, 7, 3);
+
+		int page = 0;
+		int y = 0;
+		for (HourlyDropRecipe recipe : hourlyDrop.getRecipes()) {
+			paginatedPane.addPane(page, new DropRecipePane(openedForPlayer, this, recipe, y));
+
+			y++;
+
+			if (y == 3) {
+				page++;
+				y = 0;
 			}
+		}
 
-			List<ItemStack> contents = Arrays.asList(merchantInventory.getContents());
+		PagingButtons pagingButtons = new PagingButtons(Slot.fromXY(0, 3), 9, paginatedPane);
+		DropsGui.setBackItem(pagingButtons);
+		DropsGui.setForwardItem(pagingButtons);
 
-			for (ItemStack content : contents) {
-				if (content == null || content.getType().equals(Material.AIR)) {
-					continue;
-				}
+		addPane(paginatedPane);
+		addPane(pagingButtons);
 
-				HashMap<Integer, ItemStack> notAdded = event.getPlayer().getInventory().addItem(content);
+		update();
+	}
 
-				if (notAdded.isEmpty()) {
-					continue;
-				}
+	/**
+	 * Gets back item.
+	 *
+	 * @return the back item
+	 */
+	private GuiItem getBackItem() {
+		ItemStack itemStack = OraxenItems.getItemById("daily_reward_back").build();
+		ItemMeta itemMeta = itemStack.getItemMeta();
 
-				notAdded.forEach(
-						(index, item) -> event.getPlayer().getWorld().dropItem(event.getPlayer().getLocation(), item));
-			}
-		});
+		if (itemMeta != null) {
+			itemMeta.displayName(
+					Component.text("Zurück", NamedTextColor.GOLD).decoration(TextDecoration.ITALIC, false));
+			itemStack.setItemMeta(itemMeta);
+		}
 
-		setOnTopClick(event -> {
-			InventoryAction[] allowedActions = new InventoryAction[] {
-					InventoryAction.PICKUP_ALL,
-			};
+		return new GuiItem(itemStack, event -> {
+			event.setCancelled(true);
 
-			if (Arrays.stream(allowedActions).noneMatch(action -> action.equals(event.getAction()))) {
-				event.setCancelled(true);
-				return;
-			}
-
-			ItemStack currentItem = event.getCurrentItem();
-
-			if (currentItem == null) {
-				return;
-			}
-
-			if (!( event.getClickedInventory() != null &&
-				   event.getClickedInventory() instanceof MerchantInventory merchantInventory )) {
-				return;
-			}
-
-			MerchantRecipe recipe = merchantInventory.getSelectedRecipe();
-
-			if (recipe == null || !currentItem.equals(recipe.getResult())) {
-				return;
-			}
-
-			HourlyDropRecipe dropRecipe = hourlyDrop.findByMerchantRecipe(recipe);
-
-			if (dropRecipe == null) {
-				return;
-			}
-
-			HumanEntity humanEntity = event.getWhoClicked();
-
-			int currentPlayerUses = dropRecipe.getPlayerUses(humanEntity.getUniqueId());
-			int clickedItemAmount = currentItem.getAmount();
-			int resultAmount = recipe.getResult().getAmount();
-
-			int newUses = currentPlayerUses + clickedItemAmount / resultAmount;
-
-			recipe.setUses(newUses);
-			dropRecipe.setPlayerUses(humanEntity.getUniqueId(), newUses);
+			dropsGui.show(event.getWhoClicked());
+			dropsGui.update();
 		});
 	}
 }
