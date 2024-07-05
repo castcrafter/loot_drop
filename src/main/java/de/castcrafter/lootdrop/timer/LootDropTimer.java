@@ -53,7 +53,7 @@ public class LootDropTimer extends BukkitRunnable {
 						Component.text("Die Stunde ", NamedTextColor.GREEN).append(Component.text(
 								hours,
 								NamedTextColor.GOLD
-						)).append(Component.text(" sind geöffnet!", NamedTextColor.GREEN))
+						)).append(Component.text(" Trades sind geöffnet!", NamedTextColor.GREEN))
 				);
 
 				SoundUtils.playSound(player, Sound.ENTITY_CHICKEN_EGG, 1, 1);
