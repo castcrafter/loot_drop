@@ -50,7 +50,6 @@ public class Main extends JavaPlugin {
 	@Override
 	public void onDisable() {
 		oldMain.onDisable();
-
 		commandManager.unregisterCommands();
 		listenerManager.unregisterListeners();
 	}
