@@ -1,6 +1,7 @@
-package de.castcrafter.lootdrop.command.commands;
+package de.castcrafter.lootdrop.command.commands.event.subevent.subcommands;
 
 import de.castcrafter.lootdrop.Messages;
+import de.castcrafter.lootdrop.command.commands.event.subevent.SubEventCommand;
 import de.castcrafter.lootdrop.utils.Chat;
 import dev.jorel.commandapi.CommandAPICommand;
 import org.bukkit.Location;
@@ -8,19 +9,18 @@ import org.bukkit.Location;
 /**
  * The type Event join command.
  */
-public class EventJoinCommand extends CommandAPICommand {
+public class SubEventJoinCommand extends CommandAPICommand {
 
 	/**
 	 * Instantiates a new Event join command.
 	 *
-	 * @param commandName the command name
+	 * @param commandName  the command name
+	 * @param eventCommand the event command
 	 */
-	public EventJoinCommand(String commandName) {
+	public SubEventJoinCommand(String commandName, SubEventCommand eventCommand) {
 		super(commandName);
 
-		EventCommand eventCommand = EventCommand.INSTANCE;
-
-		withPermission("castcrafter.event.join");
+		withPermission("lootdrop.command.subevent.join");
 
 		executesPlayer((player, args) -> {
 			Location eventLocation = eventCommand.getEventLocation();

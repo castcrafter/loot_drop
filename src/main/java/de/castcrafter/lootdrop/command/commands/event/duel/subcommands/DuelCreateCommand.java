@@ -1,4 +1,4 @@
-package de.castcrafter.lootdrop.command.commands.duel.subcommands;
+package de.castcrafter.lootdrop.command.commands.event.duel.subcommands;
 
 import de.castcrafter.lootdrop.duel.Duel;
 import de.castcrafter.lootdrop.duel.DuelManager;
@@ -28,7 +28,7 @@ public class DuelCreateCommand extends CommandAPICommand {
 	public DuelCreateCommand(String commandName) {
 		super(commandName);
 
-		withPermission("castcrafter.lootdrop.duel.create");
+		withPermission("lootdrop.command.duel.create");
 
 		withArguments(new PlayerArgument("playerOne"));
 		withArguments(new PlayerArgument("playerTwo"));

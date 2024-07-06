@@ -1,7 +1,7 @@
-package de.castcrafter.lootdrop.command.commands.event;
+package de.castcrafter.lootdrop.command.commands.event.subevent.subcommands;
 
 import de.castcrafter.lootdrop.Messages;
-import de.castcrafter.lootdrop.command.commands.EventCommand;
+import de.castcrafter.lootdrop.command.commands.event.subevent.SubEventCommand;
 import de.castcrafter.lootdrop.utils.Chat;
 import dev.jorel.commandapi.CommandAPICommand;
 import org.bukkit.Bukkit;
@@ -9,7 +9,7 @@ import org.bukkit.Bukkit;
 /**
  * The type Event start sub command.
  */
-public class EventStopSubCommand extends CommandAPICommand {
+public class SubEventStopCommand extends CommandAPICommand {
 
 	/**
 	 * Instantiates a new Event start sub command.
@@ -17,10 +17,10 @@ public class EventStopSubCommand extends CommandAPICommand {
 	 * @param commandName  the command name
 	 * @param eventCommand the event command
 	 */
-	public EventStopSubCommand(String commandName, final EventCommand eventCommand) {
+	public SubEventStopCommand(String commandName, final SubEventCommand eventCommand) {
 		super(commandName);
 
-		withPermission("castcrafter.event.stop");
+		withPermission("lootdrop.command.subevent.stop");
 
 		executes((sender, args) -> {
 			if (!eventCommand.isEventStarted()) {

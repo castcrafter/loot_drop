@@ -1,4 +1,4 @@
-package de.castcrafter.lootdrop.command.commands.duel.subcommands;
+package de.castcrafter.lootdrop.command.commands.event.duel.subcommands;
 
 import de.castcrafter.lootdrop.duel.Duel;
 import de.castcrafter.lootdrop.duel.DuelFinishState;
@@ -27,7 +27,7 @@ public class DuelResultCommand extends CommandAPICommand {
 	public DuelResultCommand(String commandName) {
 		super(commandName);
 
-		withPermission("castcrafter.lootdrop.duel.result");
+		withPermission("lootdrop.command.duel.result");
 
 		withArguments(
 				new StringArgument("winningPlayer").replaceSuggestions(ArgumentSuggestions.stringCollection(info -> {

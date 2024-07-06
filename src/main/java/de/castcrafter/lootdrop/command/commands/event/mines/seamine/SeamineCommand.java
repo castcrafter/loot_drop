@@ -1,4 +1,4 @@
-package de.castcrafter.lootdrop.command.commands.seamine;
+package de.castcrafter.lootdrop.command.commands.event.mines.seamine;
 
 import dev.jorel.commandapi.CommandAPICommand;
 import org.bukkit.Location;
@@ -27,7 +27,7 @@ public class SeamineCommand extends CommandAPICommand {
 	public SeamineCommand(String commandName) {
 		super(commandName);
 
-		withPermission("castcrafter.event.lootdrop.seamine");
+		withPermission("lootdrop.command.mines.seamine");
 
 		executesPlayer((player, args) -> {
 			summonMine(player.getLocation());

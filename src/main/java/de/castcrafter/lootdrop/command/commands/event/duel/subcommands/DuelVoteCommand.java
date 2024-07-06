@@ -1,4 +1,4 @@
-package de.castcrafter.lootdrop.command.commands.duel.subcommands;
+package de.castcrafter.lootdrop.command.commands.event.duel.subcommands;
 
 import de.castcrafter.lootdrop.duel.Duel;
 import de.castcrafter.lootdrop.duel.DuelManager;
@@ -21,7 +21,7 @@ public class DuelVoteCommand extends CommandAPICommand {
 	public DuelVoteCommand(String commandName) {
 		super(commandName);
 
-		withPermission("castcrafter.lootdrop.duel.vote");
+		withPermission("lootdrop.command.duel.vote");
 
 		executesPlayer((player, args) -> {
 			Duel duel = DuelManager.INSTANCE.getRunningDuel();

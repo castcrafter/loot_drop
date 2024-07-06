@@ -1,9 +1,9 @@
-package de.castcrafter.lootdrop.command.commands.duel;
+package de.castcrafter.lootdrop.command.commands.event.duel;
 
-import de.castcrafter.lootdrop.command.commands.duel.subcommands.DuelCreateCommand;
-import de.castcrafter.lootdrop.command.commands.duel.subcommands.DuelResultCommand;
-import de.castcrafter.lootdrop.command.commands.duel.subcommands.DuelStopCommand;
-import de.castcrafter.lootdrop.command.commands.duel.subcommands.DuelVoteCommand;
+import de.castcrafter.lootdrop.command.commands.event.duel.subcommands.DuelCreateCommand;
+import de.castcrafter.lootdrop.command.commands.event.duel.subcommands.DuelResultCommand;
+import de.castcrafter.lootdrop.command.commands.event.duel.subcommands.DuelStopCommand;
+import de.castcrafter.lootdrop.command.commands.event.duel.subcommands.DuelVoteCommand;
 import dev.jorel.commandapi.CommandAPICommand;
 
 /**
@@ -19,7 +19,7 @@ public class DuelCommand extends CommandAPICommand {
 	public DuelCommand(String commandName) {
 		super(commandName);
 
-		withPermission("castcrafter.lootdrop.duel");
+		withPermission("lootdrop.command.duel");
 
 		withSubcommand(new DuelCreateCommand("create"));
 		withSubcommand(new DuelStopCommand("force-stop"));

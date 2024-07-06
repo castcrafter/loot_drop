@@ -1,14 +1,14 @@
-package de.castcrafter.lootdrop.command.commands.event;
+package de.castcrafter.lootdrop.command.commands.event.subevent.subcommands;
 
 import de.castcrafter.lootdrop.Messages;
-import de.castcrafter.lootdrop.command.commands.EventCommand;
+import de.castcrafter.lootdrop.command.commands.event.subevent.SubEventCommand;
 import de.castcrafter.lootdrop.utils.Chat;
 import dev.jorel.commandapi.CommandAPICommand;
 
 /**
  * The type Event create sub command.
  */
-public class EventCreateSubCommand extends CommandAPICommand {
+public class SubEventCreateCommand extends CommandAPICommand {
 
 	/**
 	 * Instantiates a new Event create sub command.
@@ -16,10 +16,10 @@ public class EventCreateSubCommand extends CommandAPICommand {
 	 * @param commandName  the command name
 	 * @param eventCommand the event command
 	 */
-	public EventCreateSubCommand(String commandName, final EventCommand eventCommand) {
+	public SubEventCreateCommand(String commandName, final SubEventCommand eventCommand) {
 		super(commandName);
 
-		withPermission("castcrafter.event.create");
+		withPermission("lootdrop.command.subevent.create");
 
 		executesPlayer((player, args) -> {
 			eventCommand.setEventLocation(player.getLocation());

@@ -1,4 +1,4 @@
-package de.castcrafter.lootdrop.command.commands.lootdrop.subcommands;
+package de.castcrafter.lootdrop.command.commands.event.timer.subcommands;
 
 import de.castcrafter.lootdrop.config.LootDropConfig;
 import de.castcrafter.lootdrop.timer.LootDropTimer;
@@ -10,17 +10,17 @@ import net.kyori.adventure.text.format.NamedTextColor;
 /**
  * The type Loot drop pause timer command.
  */
-public class LootDropCancelTimerCommand extends CommandAPICommand {
+public class TimerCancelCommand extends CommandAPICommand {
 
 	/**
 	 * Instantiates a new Loot drop cancel timer command.
 	 *
 	 * @param commandName the command name
 	 */
-	public LootDropCancelTimerCommand(String commandName) {
+	public TimerCancelCommand(String commandName) {
 		super(commandName);
 
-		withPermission("lootdrop.command.lootdrop.cancel");
+		withPermission("lootdrop.command.timer.cancel");
 
 		executesPlayer((player, args) -> {
 			LootDropTimer timer = LootDropConfig.INSTANCE.getTimer();

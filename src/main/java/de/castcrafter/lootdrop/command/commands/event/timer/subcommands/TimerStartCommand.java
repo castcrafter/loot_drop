@@ -1,4 +1,4 @@
-package de.castcrafter.lootdrop.command.commands.lootdrop.subcommands;
+package de.castcrafter.lootdrop.command.commands.event.timer.subcommands;
 
 import de.castcrafter.lootdrop.config.LootDropConfig;
 import de.castcrafter.lootdrop.timer.LootDropTimer;
@@ -12,12 +12,12 @@ import java.time.Duration;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 
-public class LootDropStartTimerCommand extends CommandAPICommand {
+public class TimerStartCommand extends CommandAPICommand {
 
-	public LootDropStartTimerCommand(String commandName) {
+	public TimerStartCommand(String commandName) {
 		super(commandName);
 
-		withPermission("lootdrop.command.lootdrop.start");
+		withPermission("lootdrop.command.timer.start");
 
 		withArguments(new IntegerArgument("year"));
 		withArguments(new IntegerArgument("month"));
@@ -51,7 +51,7 @@ public class LootDropStartTimerCommand extends CommandAPICommand {
 
 			LootDropTimer timer = new LootDropTimer(Duration.ofSeconds(diff));
 			timer.start();
-			
+
 			config.setTimer(timer);
 			config.saveConfig();
 		});

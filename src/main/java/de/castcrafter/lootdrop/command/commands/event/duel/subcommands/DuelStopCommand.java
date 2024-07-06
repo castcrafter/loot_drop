@@ -1,4 +1,4 @@
-package de.castcrafter.lootdrop.command.commands.duel.subcommands;
+package de.castcrafter.lootdrop.command.commands.event.duel.subcommands;
 
 import de.castcrafter.lootdrop.duel.DuelFinishState;
 import de.castcrafter.lootdrop.duel.DuelManager;
@@ -20,7 +20,7 @@ public class DuelStopCommand extends CommandAPICommand {
 	public DuelStopCommand(String commandName) {
 		super(commandName);
 
-		withPermission("castcrafter.lootdrop.duel.stop");
+		withPermission("lootdrop.command.duel.stop");
 
 		executesPlayer((player, args) -> {
 			if (DuelManager.INSTANCE.getRunningDuel() == null) {
