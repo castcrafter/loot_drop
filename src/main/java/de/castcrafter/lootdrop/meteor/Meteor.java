@@ -38,7 +38,7 @@ public class Meteor implements Listener {
 	public static final int FOLLOW_DISTANCE_END = 40;
 
 	public static final int EXPLOSION_DISTANCE = 2;
-	public static final int EXPLOSION_DAMAGE = 2;
+	public static final int EXPLOSION_DAMAGE = 8;
 	public static final int SWIRL_EXPLOSION_DISTANCE = 20;
 
 	public static final NamespacedKey METEOR_KEY = new NamespacedKey("lootdrop", "meteor");
