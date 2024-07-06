@@ -52,6 +52,22 @@ public class HourlyDropRecipe {
 	}
 
 	/**
+	 * Reset player.
+	 *
+	 * @param uuid the uuid
+	 */
+	public void resetPlayer(UUID uuid) {
+		playerUses.remove(uuid);
+	}
+
+	/**
+	 * Reset all players.
+	 */
+	public void resetAllPlayers() {
+		playerUses.clear();
+	}
+
+	/**
 	 * Increase player uses.
 	 *
 	 * @param uuid the uuid

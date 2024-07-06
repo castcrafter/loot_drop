@@ -105,6 +105,17 @@ public class LootDropConfig {
 	}
 
 	/**
+	 * Gets drop.
+	 *
+	 * @param hour the hour
+	 *
+	 * @return the drop
+	 */
+	public HourlyDrop getDrop(int hour) {
+		return drops.stream().filter(drop -> drop.getHour() == hour).findFirst().orElse(null);
+	}
+
+	/**
 	 * Gets started timestamp.
 	 *
 	 * @return the started timestamp

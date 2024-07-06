@@ -59,6 +59,22 @@ public class HourlyDrop {
 	}
 
 	/**
+	 * Reset player.
+	 *
+	 * @param uuid the uuid
+	 */
+	public void resetPlayer(UUID uuid) {
+		recipes.forEach(recipe -> recipe.resetPlayer(uuid));
+	}
+
+	/**
+	 * Reset all players.
+	 */
+	public void resetAllPlayers() {
+		recipes.forEach(HourlyDropRecipe::resetAllPlayers);
+	}
+
+	/**
 	 * Can player use boolean.
 	 *
 	 * @param uuid the uuid
