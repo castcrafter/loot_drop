@@ -34,12 +34,12 @@ public class Meteor implements Listener {
 	public static final double METEOR_FOLLOW_VELOCITY = .1;
 	public static final double METEOR_SWIRL_VELOCITY = .25;
 
-	public static final int FOLLOW_DISTANCE_START = 20;
-	public static final int FOLLOW_DISTANCE_END = 30;
+	public static final int FOLLOW_DISTANCE_START = 30;
+	public static final int FOLLOW_DISTANCE_END = 40;
 
-	public static final int EXPLOSION_DISTANCE = 3;
-	public static final int EXPLOSION_DAMAGE = 4;
-	public static final int SWIRL_EXPLOSION_DISTANCE = 10;
+	public static final int EXPLOSION_DISTANCE = 2;
+	public static final int EXPLOSION_DAMAGE = 2;
+	public static final int SWIRL_EXPLOSION_DISTANCE = 20;
 
 	public static final NamespacedKey METEOR_KEY = new NamespacedKey("lootdrop", "meteor");
 	public static final NamespacedKey METEOR_SWIRL_KEY = new NamespacedKey("lootdrop", "meteor_should_swirl");
