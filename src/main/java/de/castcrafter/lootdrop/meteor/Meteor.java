@@ -32,7 +32,7 @@ import java.util.UUID;
 public class Meteor implements Listener {
 
 	public static final double METEOR_FOLLOW_VELOCITY = .1;
-	public static final double METEOR_SWIRL_VELOCITY = .5;
+	public static final double METEOR_SWIRL_VELOCITY = .25;
 
 	public static final int FOLLOW_DISTANCE_START = 20;
 	public static final int FOLLOW_DISTANCE_END = 30;
@@ -327,7 +327,7 @@ public class Meteor implements Listener {
 
 		double velocity = shouldSwirl ? METEOR_SWIRL_VELOCITY : METEOR_FOLLOW_VELOCITY;
 
-		meteorHolder.teleportAsync(meteorHolder.getLocation().add(
+		meteorHolder.teleportAsync(meteorHolder.getLocation().clone().add(
 				new Vector(
 						( currentTarget.getLocation().getX() - meteorHolder.getLocation().getX() ) *
 						velocity,
@@ -337,6 +337,19 @@ public class Meteor implements Listener {
 						velocity
 				)
 		));
+
+		int setback = 5;
+		Location locationMinusOneForce = meteorHolder.getLocation().clone().subtract(
+				new Vector(
+						( currentTarget.getLocation().getX() - meteorHolder.getLocation().getX() ) *
+						( setback * velocity ),
+						( currentTarget.getLocation().getY() - meteorHolder.getLocation().getY() ) *
+						( setback * velocity ),
+						( currentTarget.getLocation().getZ() - meteorHolder.getLocation().getZ() ) *
+						( setback * velocity )
+				)
+		);
+		Particle.FLAME.builder().count(0).location(locationMinusOneForce).receivers(30).spawn();
 	}
 
 	/**
