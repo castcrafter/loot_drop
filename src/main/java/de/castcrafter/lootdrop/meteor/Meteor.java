@@ -32,7 +32,7 @@ import java.util.UUID;
 public class Meteor implements Listener {
 
 	public static final double METEOR_FOLLOW_VELOCITY = .1;
-	public static final double METEOR_SWIRL_VELOCITY = .1;
+	public static final double METEOR_SWIRL_VELOCITY = .5;
 
 	public static final int FOLLOW_DISTANCE_START = 20;
 	public static final int FOLLOW_DISTANCE_END = 30;
