@@ -31,7 +31,7 @@ public class TimerCancelCommand extends CommandAPICommand {
 			}
 
 			timer.stop();
-			Chat.sendMessage(player, Component.text("Timer wurde abgebrochen!", NamedTextColor.GREEN));
+			Chat.sendMessage(player, Component.text("Der Timer wurde abgebrochen!", NamedTextColor.GREEN));
 		});
 	}
 }

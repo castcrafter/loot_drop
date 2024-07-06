@@ -1,6 +1,8 @@
 package de.castcrafter.lootdrop.command.commands.event.timer;
 
 import de.castcrafter.lootdrop.command.commands.event.timer.subcommands.TimerCancelCommand;
+import de.castcrafter.lootdrop.command.commands.event.timer.subcommands.TimerCreateCommand;
+import de.castcrafter.lootdrop.command.commands.event.timer.subcommands.TimerEndCommand;
 import de.castcrafter.lootdrop.command.commands.event.timer.subcommands.TimerStartCommand;
 import dev.jorel.commandapi.CommandAPICommand;
 
@@ -20,6 +22,8 @@ public class TimerCommand extends CommandAPICommand {
 		withPermission("lootdrop.command.timer");
 
 		withSubcommand(new TimerStartCommand("start"));
+		withSubcommand(new TimerEndCommand("end"));
+		withSubcommand(new TimerCreateCommand("create"));
 		withSubcommand(new TimerCancelCommand("cancel"));
 	}
 }

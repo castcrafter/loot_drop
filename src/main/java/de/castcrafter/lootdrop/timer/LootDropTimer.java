@@ -22,7 +22,7 @@ public class LootDropTimer extends BukkitRunnable {
 
 	private static final ComponentLogger LOGGER = ComponentLogger.logger(LootDropTimer.class);
 
-	private final long maxSeconds;
+	private long maxSeconds;
 	private long seconds;
 
 	/**
@@ -31,6 +31,15 @@ public class LootDropTimer extends BukkitRunnable {
 	 * @param duration the duration
 	 */
 	public LootDropTimer(Duration duration) {
+		setDuration(duration);
+	}
+
+	/**
+	 * Sets duration.
+	 *
+	 * @param duration the duration
+	 */
+	public void setDuration(Duration duration) {
 		this.maxSeconds = duration.getSeconds();
 		this.seconds = this.maxSeconds + 1;
 	}

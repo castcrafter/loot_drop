@@ -1,29 +1,31 @@
 package de.castcrafter.lootdrop.command.commands.event.timer.subcommands;
 
 import de.castcrafter.lootdrop.config.LootDropConfig;
+import de.castcrafter.lootdrop.timer.LootDropTimer;
 import de.castcrafter.lootdrop.utils.Chat;
 import dev.jorel.commandapi.CommandAPICommand;
 import dev.jorel.commandapi.arguments.IntegerArgument;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 
+import java.time.Duration;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 
 /**
- * The type Timer start command.
+ * The type Timer end command.
  */
-public class TimerStartCommand extends CommandAPICommand {
+public class TimerEndCommand extends CommandAPICommand {
 
 	/**
-	 * Instantiates a new Timer start command.
+	 * Instantiates a new Timer end command.
 	 *
 	 * @param commandName the command name
 	 */
-	public TimerStartCommand(String commandName) {
+	public TimerEndCommand(String commandName) {
 		super(commandName);
 
-		withPermission("lootdrop.command.timer.start");
+		withPermission("lootdrop.command.timer.end");
 
 		withArguments(new IntegerArgument("year"));
 		withArguments(new IntegerArgument("month"));
@@ -40,10 +42,28 @@ public class TimerStartCommand extends CommandAPICommand {
 			int hour = args.getOrDefaultUnchecked("hour", 0);
 			int minute = args.getOrDefaultUnchecked("minute", 0);
 
-			config.setStartTimestamp(ZonedDateTime.of(year, month, day, hour, minute, 0, 0, ZoneId.systemDefault()));
-			config.saveConfig();
+			ZonedDateTime endTime =
+					ZonedDateTime.of(year, month, day, hour, minute, 0, 0, ZoneId.systemDefault());
 
-			Chat.sendMessage(player, Component.text("Der Start wurde erfolgreich gesetzt.", NamedTextColor.GREEN));
+			config.setEndTimestamp(endTime);
+
+			long diff = endTime.toEpochSecond() - ZonedDateTime.now().toEpochSecond();
+
+			LootDropTimer timer = config.getTimer();
+			if (timer != null) {
+				timer.setDuration(Duration.ofSeconds(diff));
+				Chat.sendMessage(player, Component.text(
+						"Der Timer wurde erfolgreich auf das neue Ende umgestellt!",
+						NamedTextColor.GREEN
+				));
+			}
+
+			Chat.sendMessage(player, Component.text(
+					"Das Ende des Timers wurde erfolgreich gesetzt!",
+					NamedTextColor.GREEN
+			));
+
+			config.saveConfig();
 		});
 	}
 }
