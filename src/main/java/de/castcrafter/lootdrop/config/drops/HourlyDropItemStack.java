@@ -9,6 +9,7 @@ import org.bukkit.Color;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.EnchantmentStorageMeta;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.PotionMeta;
 import org.spongepowered.configurate.objectmapping.ConfigSerializable;
@@ -171,7 +172,11 @@ public class HourlyDropItemStack {
 				Enchantment bukkitEnchantment = enchantment.getEnchantment();
 
 				if (bukkitEnchantment != null) {
-					itemMeta.addEnchant(bukkitEnchantment, enchantment.getLevel(), true);
+					if (itemMeta instanceof EnchantmentStorageMeta) {
+						((EnchantmentStorageMeta) itemMeta).addStoredEnchant(bukkitEnchantment, enchantment.getLevel(), true);
+					} else {
+						itemMeta.addEnchant(bukkitEnchantment, enchantment.getLevel(), true);
+					}
 				}
 			}
 		}
