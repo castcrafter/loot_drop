@@ -5,6 +5,8 @@
 plugins {
     `java-library`
     `maven-publish`
+
+    id("io.github.goooler.shadow") version "8.1.8"
 }
 
 repositories {
@@ -13,18 +15,33 @@ repositories {
     maven("https://repo.papermc.io/repository/maven-public/")
     maven("https://oss.sonatype.org/content/groups/public/")
     maven("https://repo.maven.apache.org/maven2/")
+    maven("https://repo.extendedclip.com/content/repositories/placeholderapi/")
+    maven("https://repo.oraxen.com/releases")
+    maven("https://jitpack.io")
 }
 
 dependencies {
-    compileOnly(libs.paper.api)
-    compileOnly(libs.commandapi)
+    compileOnlyApi(libs.paper.api)
+    compileOnlyApi(libs.commandapi)
+    compileOnlyApi(libs.placeholder.api)
+    compileOnlyApi(libs.oraxen)
+    compileOnlyApi(libs.betterhud)
+
+    api(libs.inventory.framework)
+    api(libs.configurate.core)
+    api(libs.configurate.yml)
 }
 
 group = "de.castcrafter"
 version = "1.0-SNAPSHOT"
-description = "loot_drop"
 
-java.sourceCompatibility = JavaVersion.VERSION_21
+tasks {
+    shadowJar {
+        relocate("com.github.stefvanschie.inventoryframework", "de.castcrafter.lootdrop.inventoryframework")
+        relocate("org.spongepowered", "de.castcrafter.lootdrop.spongepowered")
+    }
+}
+description = "loot_drop"
 
 publishing {
     publications.create<MavenPublication>("maven") {
@@ -38,4 +55,10 @@ tasks.withType<JavaCompile>() {
 
 tasks.withType<Javadoc>() {
     options.encoding = "UTF-8"
+}
+
+java {
+    toolchain {
+        languageVersion.set(JavaLanguageVersion.of(21))
+    }
 }

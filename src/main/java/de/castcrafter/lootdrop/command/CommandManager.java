@@ -1,9 +1,10 @@
 package de.castcrafter.lootdrop.command;
 
-import de.castcrafter.lootdrop.command.commands.EventCommand;
-import de.castcrafter.lootdrop.command.commands.EventJoinCommand;
 import de.castcrafter.lootdrop.command.commands.MakeSpecialCommand;
-import de.castcrafter.lootdrop.command.commands.seamine.SeamineCommand;
+import de.castcrafter.lootdrop.command.commands.drops.DropsCommand;
+import de.castcrafter.lootdrop.command.commands.event.EventCommand;
+import de.castcrafter.lootdrop.command.commands.event.subevent.SubEventCommand;
+import de.castcrafter.lootdrop.command.commands.event.subevent.subcommands.SubEventJoinCommand;
 import dev.jorel.commandapi.CommandAPI;
 import dev.jorel.commandapi.CommandAPICommand;
 
@@ -23,10 +24,11 @@ public class CommandManager {
 	public CommandManager() {
 		this.commands = new ArrayList<>();
 
-		this.commands.add(EventCommand.INSTANCE);
-		this.commands.add(new EventJoinCommand("join"));
-		this.commands.add(new SeamineCommand("seamine"));
 		this.commands.add(new MakeSpecialCommand("makespecial"));
+		this.commands.add(new DropsCommand("drops"));
+
+		this.commands.add(new EventCommand("event"));
+		this.commands.add(new SubEventJoinCommand("join", SubEventCommand.INSTANCE));
 	}
 
 	/**
