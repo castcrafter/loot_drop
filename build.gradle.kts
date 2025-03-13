@@ -7,11 +7,13 @@ plugins {
     `maven-publish`
 
     id("io.github.goooler.shadow") version "8.1.8"
+    kotlin("jvm")
 }
 
 repositories {
     mavenLocal()
 
+    mavenCentral()
     maven("https://repo.papermc.io/repository/maven-public/")
     maven("https://oss.sonatype.org/content/groups/public/")
     maven("https://repo.maven.apache.org/maven2/")
@@ -25,11 +27,14 @@ dependencies {
     compileOnlyApi(libs.commandapi)
     compileOnlyApi(libs.placeholder.api)
     compileOnlyApi(libs.oraxen)
-    compileOnlyApi(libs.betterhud)
+    compileOnlyApi(libs.betterhud.standard)
+    compileOnlyApi(libs.betterhud.bukkit)
+    compileOnlyApi(libs.betterhud.commands)
 
     api(libs.inventory.framework)
     api(libs.configurate.core)
     api(libs.configurate.yml)
+    implementation(kotlin("stdlib-jdk8"))
 }
 
 group = "de.castcrafter"
@@ -37,7 +42,11 @@ version = "1.0-SNAPSHOT"
 
 tasks {
     shadowJar {
-        relocate("com.github.stefvanschie.inventoryframework", "de.castcrafter.lootdrop.inventoryframework")
+        mergeServiceFiles()
+        relocate(
+            "com.github.stefvanschie.inventoryframework",
+            "de.castcrafter.lootdrop.inventoryframework"
+        )
         relocate("org.spongepowered", "de.castcrafter.lootdrop.spongepowered")
     }
 }
