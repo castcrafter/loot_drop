@@ -6,20 +6,13 @@ plugins {
     `java-library`
     `maven-publish`
 
-    id("io.github.goooler.shadow") version "8.1.8"
-    kotlin("jvm")
+    id("com.gradleup.shadow") version "9.0.0-beta10"
 }
 
 repositories {
-    mavenLocal()
-
     mavenCentral()
-    maven("https://repo.papermc.io/repository/maven-public/")
-    maven("https://oss.sonatype.org/content/groups/public/")
-    maven("https://repo.maven.apache.org/maven2/")
-    maven("https://repo.extendedclip.com/content/repositories/placeholderapi/")
-    maven("https://repo.oraxen.com/releases")
-    maven("https://jitpack.io")
+    
+    maven("https://repo.slne.dev/repository/maven-public/")
 }
 
 dependencies {
@@ -30,11 +23,11 @@ dependencies {
     compileOnlyApi(libs.betterhud.standard)
     compileOnlyApi(libs.betterhud.bukkit)
     compileOnlyApi(libs.betterhud.commands)
+    compileOnlyApi(libs.znpc)
 
     api(libs.inventory.framework)
     api(libs.configurate.core)
     api(libs.configurate.yml)
-    implementation(kotlin("stdlib-jdk8"))
 }
 
 group = "de.castcrafter"

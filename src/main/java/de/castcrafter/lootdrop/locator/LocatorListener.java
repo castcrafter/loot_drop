@@ -1,5 +1,6 @@
 package de.castcrafter.lootdrop.locator;
 
+import de.castcrafter.lootdrop.larry.LarryNpc;
 import it.unimi.dsi.fastutil.Pair;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
@@ -18,7 +19,11 @@ public class LocatorListener implements Listener {
   public void onMove(PlayerMoveEvent event) {
     Player player = event.getPlayer();
     Location startingLocation = player.getEyeLocation();
-    Location toLocate = new Location(player.getWorld(), 0, 0, 0);
+
+    Location toLocate = LarryNpc.locateNpc();
+    if (toLocate == null) {
+      return;
+    }
 
     Pair<LocatorResult, LocatorResult> result = Locators.getLocator(Location.class)
         .map(locator -> locator.locate(startingLocation, toLocate))

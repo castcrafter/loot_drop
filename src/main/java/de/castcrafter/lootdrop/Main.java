@@ -2,55 +2,65 @@ package de.castcrafter.lootdrop;
 
 import de.castcrafter.lootdrop.command.CommandManager;
 import de.castcrafter.lootdrop.config.LootDropConfig;
+import de.castcrafter.lootdrop.larry.LarryNpc;
+import de.castcrafter.lootdrop.larry.LarrySpawns;
 import de.castcrafter.lootdrop.listener.ListenerManager;
 import de.castcrafter.lootdrop.placeholder.LootDropPlaceholderExpansion;
+import java.security.NoSuchAlgorithmException;
+import java.security.SecureRandom;
 import org.bukkit.plugin.java.JavaPlugin;
 
-/**
- * The type Main.
- */
 public class Main extends JavaPlugin {
 
-	private Loot_drop oldMain;
+  private Loot_drop oldMain;
 
-	private CommandManager commandManager;
-	private ListenerManager listenerManager;
+  private CommandManager commandManager;
+  private ListenerManager listenerManager;
 
-	/**
-	 * Gets instance.
-	 *
-	 * @return the instance
-	 */
-	public static Main getInstance() {
-		return getPlugin(Main.class);
-	}
+  private SecureRandom random;
 
-	@Override
-	public void onLoad() {
-		LootDropConfig.INSTANCE.loadConfig();
+  public static Main getInstance() {
+    return getPlugin(Main.class);
+  }
 
-		commandManager = new CommandManager();
-		listenerManager = new ListenerManager();
+  @Override
+  public void onLoad() {
+    try {
+      random = SecureRandom.getInstanceStrong();
+    } catch (NoSuchAlgorithmException e) {
+      random = new SecureRandom();
+    }
 
-		oldMain = new Loot_drop(this);
-	}
+    LootDropConfig.INSTANCE.loadConfig();
 
-	@Override
-	public void onEnable() {
-		commandManager.registerCommands();
-		listenerManager.registerListeners();
+    commandManager = new CommandManager();
+    listenerManager = new ListenerManager();
 
-		oldMain.onEnable();
+    oldMain = new Loot_drop(this);
+  }
 
-		LootDropConfig.INSTANCE.loadAndStartTimerIfExistsInConfig();
+  @Override
+  public void onEnable() {
+    commandManager.registerCommands();
+    listenerManager.registerListeners();
 
-		new LootDropPlaceholderExpansion().register();
-	}
+    oldMain.onEnable();
 
-	@Override
-	public void onDisable() {
-		oldMain.onDisable();
-		commandManager.unregisterCommands();
-		listenerManager.unregisterListeners();
-	}
+    LootDropConfig.INSTANCE.loadAndStartTimerIfExistsInConfig();
+
+    new LootDropPlaceholderExpansion().register();
+
+    LarryNpc.spawn(LarrySpawns.getRandomLocation());
+  }
+
+  @Override
+  public void onDisable() {
+    oldMain.onDisable();
+    commandManager.unregisterCommands();
+    listenerManager.unregisterListeners();
+  }
+
+  public SecureRandom getRandom() {
+    return random;
+  }
 }
