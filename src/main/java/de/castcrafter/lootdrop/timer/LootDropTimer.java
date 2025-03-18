@@ -82,8 +82,8 @@ public class LootDropTimer extends BukkitRunnable {
       return;
     }
 
-		this.runTaskTimerAsynchronously(Main.getInstance(), 0, 20L);
-	}
+    this.runTaskTimer(Main.getInstance(), 0, 20L);
+  }
 
   public boolean isRunning() {
     try {
