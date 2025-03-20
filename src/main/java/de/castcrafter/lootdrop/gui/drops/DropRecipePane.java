@@ -221,7 +221,10 @@ public class DropRecipePane extends StaticPane {
 
       SoundUtils.playSound(player, Sound.ENTITY_CHICKEN_EGG, .5f, 1f);
 
-      player.sendMessage(dropRecipe.getMessage());
+      if (dropRecipe.getMessage() != null) {
+        player.sendMessage(dropRecipe.getMessage());
+      }
+
       dropRecipe.increasePlayerUses(player.getUniqueId());
       gui.update();
     });

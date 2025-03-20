@@ -97,6 +97,10 @@ public class SupplyTradeRecipe {
   }
 
   public Component getMessage() {
+    if (message == null) {
+      return null;
+    }
+    
     return MiniMessage.miniMessage().deserialize(message);
   }
 
