@@ -19,6 +19,10 @@ public enum LarrySpawns {
   }
 
   private static boolean locationEquals(Location location1, Location location2) {
+    if (location1 == null || location2 == null) {
+      return false;
+    }
+
     return location1.getBlockX() == location2.getBlockX()
         && location1.getBlockY() == location2.getBlockY()
         && location1.getBlockZ() == location2.getBlockZ();
