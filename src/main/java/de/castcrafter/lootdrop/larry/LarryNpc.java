@@ -1,8 +1,5 @@
 package de.castcrafter.lootdrop.larry;
 
-import de.castcrafter.lootdrop.gui.drops.DropGui;
-import java.util.ArrayList;
-import java.util.List;
 import lol.pyr.znpcsplus.api.NpcApi;
 import lol.pyr.znpcsplus.api.NpcApiProvider;
 import lol.pyr.znpcsplus.api.npc.NpcEntry;
@@ -10,12 +7,10 @@ import lol.pyr.znpcsplus.api.npc.NpcType;
 import lol.pyr.znpcsplus.api.skin.SkinDescriptor;
 import lol.pyr.znpcsplus.util.NpcLocation;
 import org.bukkit.Location;
-import org.bukkit.event.inventory.InventoryCloseEvent.Reason;
 import org.bukkit.util.BoundingBox;
 
 public class LarryNpc {
 
-  public static List<DropGui> openLarryGuis = new ArrayList<>();
   public static Location currentLocation = null;
 
   private static final int BOUNDING_BOX_RADIUS = 10;
@@ -66,9 +61,6 @@ public class LarryNpc {
 
     currentLocation = spawnLocation;
     updateBoundingBox();
-
-    openLarryGuis.forEach(
-        gui -> gui.getViewers().forEach(viewer -> viewer.closeInventory(Reason.TELEPORT)));
   }
 
   public static void updateBoundingBox() {
