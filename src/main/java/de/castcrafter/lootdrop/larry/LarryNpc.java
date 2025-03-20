@@ -7,8 +7,14 @@ import lol.pyr.znpcsplus.api.npc.NpcType;
 import lol.pyr.znpcsplus.api.skin.SkinDescriptor;
 import lol.pyr.znpcsplus.util.NpcLocation;
 import org.bukkit.Location;
+import org.bukkit.util.BoundingBox;
 
 public class LarryNpc {
+
+  public static Location currentLocation = null;
+
+  private static final int BOUNDING_BOX_RADIUS = 10;
+  public static BoundingBox hideBoundingBox = null;
 
   private static final String NPC_ID = "larry";
   private static final String NPC_NAME = "Larry";
@@ -52,6 +58,22 @@ public class LarryNpc {
         api.getPropertyRegistry().getByName("name", String.class),
         NPC_NAME
     );
+
+    currentLocation = spawnLocation;
+    updateBoundingBox();
+  public static void updateBoundingBox() {
+    if (currentLocation == null) {
+      return;
+    }
+
+    hideBoundingBox = new BoundingBox(
+        currentLocation.getX() - BOUNDING_BOX_RADIUS,
+        currentLocation.getY() - BOUNDING_BOX_RADIUS,
+        currentLocation.getZ() - BOUNDING_BOX_RADIUS,
+        currentLocation.getX() + BOUNDING_BOX_RADIUS,
+        currentLocation.getY() + BOUNDING_BOX_RADIUS,
+        currentLocation.getZ() + BOUNDING_BOX_RADIUS
+    );
   }
 
   public static void updateLocation(Location location) {
@@ -60,6 +82,9 @@ public class LarryNpc {
     }
 
     npc.getNpc().setLocation(new NpcLocation(location));
+
+    currentLocation = location;
+    updateBoundingBox();
   }
 
   public static void despawn() {
