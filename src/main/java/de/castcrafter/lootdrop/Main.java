@@ -2,8 +2,6 @@ package de.castcrafter.lootdrop;
 
 import de.castcrafter.lootdrop.command.CommandManager;
 import de.castcrafter.lootdrop.config.LootDropConfig;
-import de.castcrafter.lootdrop.larry.LarryNpc;
-import de.castcrafter.lootdrop.larry.LarrySpawns;
 import de.castcrafter.lootdrop.listener.ListenerManager;
 import de.castcrafter.lootdrop.placeholder.LootDropPlaceholderExpansion;
 import java.security.NoSuchAlgorithmException;
@@ -49,8 +47,6 @@ public class Main extends JavaPlugin {
     LootDropConfig.INSTANCE.loadAndStartTimerIfExistsInConfig();
 
     new LootDropPlaceholderExpansion().register();
-
-    LarryNpc.spawn(LarrySpawns.getRandomLocation());
   }
 
   @Override

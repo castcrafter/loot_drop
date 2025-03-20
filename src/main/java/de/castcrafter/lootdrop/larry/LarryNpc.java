@@ -80,7 +80,7 @@ public class LarryNpc {
 
   public static void updateLocation(Location location) {
     if (npc == null || npc.getNpc() == null) {
-      return;
+      spawn(location);
     }
 
     npc.getNpc().setLocation(new NpcLocation(location));
