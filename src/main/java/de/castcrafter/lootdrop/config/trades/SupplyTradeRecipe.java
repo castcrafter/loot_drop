@@ -5,6 +5,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.UUID;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
@@ -17,6 +19,7 @@ public class SupplyTradeRecipe {
   private SupplyTradeItemStack firstItem = null;
   private SupplyTradeItemStack secondItem = null;
   private SupplyTradeItemStack resultItem = null;
+  private String message = null;
 
   private int maxUses = 1;
   private Map<UUID, Integer> playerUses = new HashMap<>();
@@ -90,6 +93,10 @@ public class SupplyTradeRecipe {
 
   public SupplyTradeItemStack getResultItem() {
     return resultItem;
+  }
+
+  public Component getMessage() {
+    return MiniMessage.miniMessage().deserialize(message);
   }
 
   public MerchantRecipe toRecipe(UUID uuid) {
