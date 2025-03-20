@@ -190,27 +190,33 @@ public class DropRecipePane extends StaticPane {
         return;
       }
 
-      Map<Integer, ItemStack> notAdded = inventory.addItem(resultItem);
+      if (dropRecipe.getCommand() != null) {
+        player.getServer()
+            .dispatchCommand(player.getServer().getConsoleSender(), dropRecipe.getCommand());
+      } else {
+        Map<Integer, ItemStack> notAdded = inventory.addItem(resultItem);
 
-      if (!notAdded.isEmpty()) {
-        notAdded.values()
-            .forEach(item -> player.getWorld().dropItem(player.getLocation(), item, itemEntity -> {
-              itemEntity.setPickupDelay(0);
-              itemEntity.setOwner(player.getUniqueId());
-            }));
+        if (!notAdded.isEmpty()) {
+          notAdded.values()
+              .forEach(
+                  item -> player.getWorld().dropItem(player.getLocation(), item, itemEntity -> {
+                    itemEntity.setPickupDelay(0);
+                    itemEntity.setOwner(player.getUniqueId());
+                  }));
 
-        int amountDropped = notAdded.values().stream().mapToInt(ItemStack::getAmount).sum();
-        Chat.sendMessage(
-            player,
-            Component.text("Achtung: ", NamedTextColor.RED, TextDecoration.BOLD)
-                .append(Component.text(amountDropped, NamedTextColor.YELLOW)
-                    .decoration(TextDecoration.BOLD, false))
-                .append(Component.text(
-                    " Items wurden fallengelassen, da dein Inventar voll war! Nur du kannst " +
-                        "diese Items aufheben. Sie werden dennoch normal despawnen.",
-                    NamedTextColor.RED
-                ).decoration(TextDecoration.BOLD, false))
-        );
+          int amountDropped = notAdded.values().stream().mapToInt(ItemStack::getAmount).sum();
+          Chat.sendMessage(
+              player,
+              Component.text("Achtung: ", NamedTextColor.RED, TextDecoration.BOLD)
+                  .append(Component.text(amountDropped, NamedTextColor.YELLOW)
+                      .decoration(TextDecoration.BOLD, false))
+                  .append(Component.text(
+                      " Items wurden fallengelassen, da dein Inventar voll war! Nur du kannst " +
+                          "diese Items aufheben. Sie werden dennoch normal despawnen.",
+                      NamedTextColor.RED
+                  ).decoration(TextDecoration.BOLD, false))
+          );
+        }
       }
 
       SoundUtils.playSound(player, Sound.ENTITY_CHICKEN_EGG, .5f, 1f);

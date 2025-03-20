@@ -20,6 +20,7 @@ public class SupplyTradeRecipe {
   private SupplyTradeItemStack secondItem = null;
   private SupplyTradeItemStack resultItem = null;
   private String message = null;
+  private String command = null;
 
   private int maxUses = 1;
   private Map<UUID, Integer> playerUses = new HashMap<>();
@@ -97,6 +98,10 @@ public class SupplyTradeRecipe {
 
   public Component getMessage() {
     return MiniMessage.miniMessage().deserialize(message);
+  }
+
+  public String getCommand() {
+    return command;
   }
 
   public MerchantRecipe toRecipe(UUID uuid) {
