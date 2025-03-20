@@ -13,7 +13,7 @@ public class LarryNpc {
 
   public static Location currentLocation = null;
 
-  private static final int BOUNDING_BOX_RADIUS = 10;
+  private static final int BOUNDING_BOX_RADIUS = 4;
   public static BoundingBox hideBoundingBox = null;
 
   private static final String NPC_ID = "larry";
