@@ -6,11 +6,11 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 
 public enum LarrySpawns {
-  SPAWN(new Location(Bukkit.getWorlds().getFirst(), 78, 71, -63)),
-  X_PLUS_TEN(new Location(Bukkit.getWorlds().getFirst(), 88, 71, -63)),
-  X_MINUS_TEN(new Location(Bukkit.getWorlds().getFirst(), 68, 71, -63)),
-  Z_PLUS_TEN(new Location(Bukkit.getWorlds().getFirst(), 78, 71, -53)),
-  Z_MINUS_TEN(new Location(Bukkit.getWorlds().getFirst(), 78, 71, -73));
+  SPAWN(new Location(Bukkit.getWorlds().getFirst(), -29, 73, -118)),
+  X_PLUS_TEN(new Location(Bukkit.getWorlds().getFirst(), -19, 73, -118)),
+  X_MINUS_TEN(new Location(Bukkit.getWorlds().getFirst(), -39, 73, -118)),
+  Z_PLUS_TEN(new Location(Bukkit.getWorlds().getFirst(), -29, 73, -108)),
+  Z_MINUS_TEN(new Location(Bukkit.getWorlds().getFirst(), -29, 73, -128));
 
   private final Location location;
 
