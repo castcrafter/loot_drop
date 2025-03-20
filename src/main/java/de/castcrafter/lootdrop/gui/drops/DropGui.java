@@ -8,6 +8,7 @@ import com.github.stefvanschie.inventoryframework.pane.component.PagingButtons;
 import com.github.stefvanschie.inventoryframework.pane.util.Slot;
 import de.castcrafter.lootdrop.config.trades.SupplyTrade;
 import de.castcrafter.lootdrop.config.trades.SupplyTradeRecipe;
+import de.castcrafter.lootdrop.larry.LarryNpc;
 import io.th0rgal.oraxen.api.OraxenItems;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -22,8 +23,6 @@ import org.bukkit.inventory.meta.ItemMeta;
 public class DropGui extends ChestGui {
 
   private final DropsGui dropsGui;
-  private final HumanEntity openedForPlayer;
-  private final SupplyTrade supplyTrade;
 
   /**
    * Instantiates a new Drop gui.
@@ -36,8 +35,12 @@ public class DropGui extends ChestGui {
     super(6, "<shift:-8><glyph:daily_rewards_ui>");
 
     this.dropsGui = dropsGui;
-    this.openedForPlayer = openedForPlayer;
-    this.supplyTrade = supplyTrade;
+
+    setOnClose(event -> {
+      LarryNpc.openLarryGuis.remove(this);
+    });
+
+    LarryNpc.openLarryGuis.add(this);
 
     setOnGlobalClick(event -> event.setCancelled(true));
     setOnGlobalDrag(event -> event.setCancelled(true));
