@@ -191,8 +191,8 @@ public class DropRecipePane extends StaticPane {
       }
 
       if (dropRecipe.getCommand() != null) {
-        player.getServer()
-            .dispatchCommand(player.getServer().getConsoleSender(), dropRecipe.getCommand());
+        player.getServer().dispatchCommand(player.getServer().getConsoleSender(),
+            dropRecipe.getCommand().replace("%player%", player.getName()));
       } else {
         Map<Integer, ItemStack> notAdded = inventory.addItem(resultItem);
 
