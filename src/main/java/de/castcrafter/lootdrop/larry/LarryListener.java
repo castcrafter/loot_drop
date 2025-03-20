@@ -19,11 +19,11 @@ public class LarryListener implements Listener {
     }
 
     if (LarryNpc.hideBoundingBox.contains(event.getTo().toVector())) {
-      hideShowAll(event.getPlayer(), true);
+      hideShowAll(event.getPlayer(), false);
       return;
     }
 
-    hideShowAll(event.getPlayer(), false);
+    hideShowAll(event.getPlayer(), true);
   }
 
   private void hideShowAll(Player player, boolean show) {
