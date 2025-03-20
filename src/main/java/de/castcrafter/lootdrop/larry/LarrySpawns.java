@@ -18,10 +18,23 @@ public enum LarrySpawns {
     this.location = location;
   }
 
+  private static boolean locationEquals(Location location1, Location location2) {
+    return location1.getBlockX() == location2.getBlockX()
+        && location1.getBlockY() == location2.getBlockY()
+        && location1.getBlockZ() == location2.getBlockZ();
+  }
+
   public static Location getRandomLocation() {
     SecureRandom random = Main.getInstance().getRandom();
 
-    return values()[random.nextInt(values().length)].getLocation();
+    Location oldLocation = LarryNpc.currentLocation;
+    Location newLocation;
+
+    do {
+      newLocation = values()[random.nextInt(values().length)].getLocation();
+    } while (locationEquals(oldLocation, newLocation));
+
+    return newLocation;
   }
 
   public Location getLocation() {

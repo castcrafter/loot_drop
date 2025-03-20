@@ -1,5 +1,8 @@
 package de.castcrafter.lootdrop.larry;
 
+import de.castcrafter.lootdrop.gui.drops.DropGui;
+import java.util.ArrayList;
+import java.util.List;
 import lol.pyr.znpcsplus.api.NpcApi;
 import lol.pyr.znpcsplus.api.NpcApiProvider;
 import lol.pyr.znpcsplus.api.npc.NpcEntry;
@@ -7,8 +10,16 @@ import lol.pyr.znpcsplus.api.npc.NpcType;
 import lol.pyr.znpcsplus.api.skin.SkinDescriptor;
 import lol.pyr.znpcsplus.util.NpcLocation;
 import org.bukkit.Location;
+import org.bukkit.event.inventory.InventoryCloseEvent.Reason;
+import org.bukkit.util.BoundingBox;
 
 public class LarryNpc {
+
+  public static List<DropGui> openLarryGuis = new ArrayList<>();
+  public static Location currentLocation = null;
+
+  private static final int BOUNDING_BOX_RADIUS = 10;
+  public static BoundingBox hideBoundingBox = null;
 
   private static final String NPC_ID = "larry";
   private static final String NPC_NAME = "Larry";
@@ -52,6 +63,27 @@ public class LarryNpc {
         api.getPropertyRegistry().getByName("name", String.class),
         NPC_NAME
     );
+
+    currentLocation = spawnLocation;
+    updateBoundingBox();
+
+    openLarryGuis.forEach(
+        gui -> gui.getViewers().forEach(viewer -> viewer.closeInventory(Reason.TELEPORT)));
+  }
+
+  public static void updateBoundingBox() {
+    if (currentLocation == null) {
+      return;
+    }
+
+    hideBoundingBox = new BoundingBox(
+        currentLocation.getX() - BOUNDING_BOX_RADIUS,
+        currentLocation.getY() - BOUNDING_BOX_RADIUS,
+        currentLocation.getZ() - BOUNDING_BOX_RADIUS,
+        currentLocation.getX() + BOUNDING_BOX_RADIUS,
+        currentLocation.getY() + BOUNDING_BOX_RADIUS,
+        currentLocation.getZ() + BOUNDING_BOX_RADIUS
+    );
   }
 
   public static void updateLocation(Location location) {
@@ -60,6 +92,9 @@ public class LarryNpc {
     }
 
     npc.getNpc().setLocation(new NpcLocation(location));
+
+    currentLocation = location;
+    updateBoundingBox();
   }
 
   public static void despawn() {
