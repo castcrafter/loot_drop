@@ -47,7 +47,9 @@ public class SupplyTradeItemStack {
       List<SupplyTradeItemStackEnchantment> enchantments,
       boolean unbreakable,
       String potionColor,
-      List<SupplyTradeItemStackPotionEffect> potionEffects
+      List<SupplyTradeItemStackPotionEffect> potionEffects,
+      float customModelData,
+      String leatherColor
   ) {
     this.material = material;
     this.amount = amount;
@@ -58,6 +60,9 @@ public class SupplyTradeItemStack {
 
     this.potionColor = potionColor;
     this.potionEffects = potionEffects;
+
+    this.customModelData = customModelData;
+    this.leatherColor = leatherColor;
   }
 
   public String getMaterialName() {
@@ -150,6 +155,8 @@ public class SupplyTradeItemStack {
       itemMeta.setUnbreakable(true);
     }
 
+    itemStack.setItemMeta(itemMeta);
+
     if (customModelData != -1) {
       itemStack.setData(DataComponentTypes.CUSTOM_MODEL_DATA,
           CustomModelData.customModelData().addFloat(customModelData).build());
@@ -159,8 +166,6 @@ public class SupplyTradeItemStack {
       Color colorHex = Color.fromRGB(Integer.parseInt(leatherColor, 16));
       itemStack.setData(DataComponentTypes.DYED_COLOR, DyedItemColor.dyedItemColor(colorHex, true));
     }
-
-    itemStack.setItemMeta(itemMeta);
 
     return itemStack;
   }
