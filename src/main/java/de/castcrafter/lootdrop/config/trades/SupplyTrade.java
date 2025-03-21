@@ -11,15 +11,13 @@ import org.spongepowered.configurate.objectmapping.ConfigSerializable;
 public class SupplyTrade {
 
   private long offset = 0;
-  private String name = null;
   private List<SupplyTradeRecipe> recipes = new ArrayList<>();
 
   public SupplyTrade() {
   }
 
-  public SupplyTrade(long offset, String name, List<SupplyTradeRecipe> recipes) {
+  public SupplyTrade(long offset, List<SupplyTradeRecipe> recipes) {
     this.offset = offset;
-    this.name = name;
     this.recipes = recipes;
   }
 
@@ -42,13 +40,6 @@ public class SupplyTrade {
 
   public long getOffset() {
     return offset;
-  }
-
-  public String getName() {
-    if (name == null) {
-      return "Trade " + offset;
-    }
-    return name;
   }
 
   public List<SupplyTradeRecipe> getRecipes() {

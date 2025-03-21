@@ -47,9 +47,7 @@ public class SupplyTradeItemStack {
       List<SupplyTradeItemStackEnchantment> enchantments,
       boolean unbreakable,
       String potionColor,
-      List<SupplyTradeItemStackPotionEffect> potionEffects,
-      Float customModelData,
-      String leatherColor
+      List<SupplyTradeItemStackPotionEffect> potionEffects
   ) {
     this.material = material;
     this.amount = amount;
@@ -60,7 +58,6 @@ public class SupplyTradeItemStack {
 
     this.potionColor = potionColor;
     this.potionEffects = potionEffects;
-    this.customModelData = customModelData;
   }
 
   public String getMaterialName() {
@@ -149,7 +146,7 @@ public class SupplyTradeItemStack {
       }
     }
 
-    if (unbreakable) {
+    if (itemMeta != null && unbreakable) {
       itemMeta.setUnbreakable(true);
     }
 

@@ -22,7 +22,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
-public class SupplyTradeButton {
+public class SupplyTradeButton extends GuiItem {
 
   private static final ComponentLogger LOGGER = ComponentLogger.logger(SupplyTradeButton.class);
 
@@ -56,9 +56,11 @@ public class SupplyTradeButton {
     }
 
     itemMeta.displayName(
-        Component.text("Trade " + (dropsGui.getTrades().indexOf(supplyTrade) + 1))
-            .color(NamedTextColor.YELLOW)
-            .decoration(TextDecoration.ITALIC, false));
+        Component.text("" + offset,
+            playerOpenedDrop ? NamedTextColor.RED : NamedTextColor.GREEN,
+            TextDecoration.BOLD,
+            TextDecoration.UNDERLINED
+        ).decoration(TextDecoration.ITALIC, false));
 
     List<Component> loreList = new ArrayList<>();
     loreList.add(Component.empty());
@@ -82,62 +84,38 @@ public class SupplyTradeButton {
     return itemStack;
   }
 
-  public static GuiItem create(SupplyTrade trade, DropsGui dropsGui) {
-    ItemStack itemStack = OraxenItems.getItemById("loot_drop").build();
-    ItemMeta meta = itemStack.getItemMeta();
+  public SupplyTradeButton(DropsGui dropsGui, Player forPlayer, SupplyTrade supplyTrade) {
+    super(formItemStack(forPlayer, supplyTrade), event -> {
+          long currentSeconds = Duration.between(
+              LootDropConfig.INSTANCE.getStartTimestamp(),
+              ZonedDateTime.now()
+          ).toSeconds();
 
-    meta.displayName(Component.text("Trade " + (dropsGui.getTrades().indexOf(trade) + 1))
-        .color(NamedTextColor.YELLOW)
-        .decoration(TextDecoration.ITALIC, false));
+          HumanEntity humanEntity = event.getWhoClicked();
 
-    List<Component> loreList = new ArrayList<>();
-    loreList.add(Component.empty());
+          if (currentSeconds < supplyTrade.getOffset()) {
+            Chat.sendMessage(humanEntity, Component.text(
+                "Dieser Trade ist noch nicht verfügbar",
+                NamedTextColor.RED
+            ));
 
-    boolean playerOpenedDrop = !trade.canPlayerUse(dropsGui.getPlayer().getUniqueId());
+            SoundUtils.playSound(humanEntity, Sound.BLOCK_NOTE_BLOCK_BASS, .5f, 1f);
 
-    if (playerOpenedDrop) {
-      loreList.add(Component.text("Du hast diesen Trade bereits geöffnet", NamedTextColor.RED));
-    } else {
-      loreList.add(
-          Component.text("Klicke hier, um", NamedTextColor.GRAY));
-      loreList.add(
-          Component.text(trade.getOffset() + " zu öffnen", NamedTextColor.GRAY));
-    }
+            return;
+          }
 
-    meta.lore(
-        loreList.stream().map(component -> component.decoration(TextDecoration.ITALIC, false))
-            .toList());
-    itemStack.setItemMeta(meta);
-    return new GuiItem(itemStack, event -> {
-      long currentSeconds = Duration.between(
-          LootDropConfig.INSTANCE.getStartTimestamp(),
-          ZonedDateTime.now()
-      ).toSeconds();
+          if (!supplyTrade.canPlayerUse(humanEntity.getUniqueId())) {
+            Chat.sendMessage(
+                humanEntity,
+                Component.text("Du hast diesen Trade bereits geöffnet", NamedTextColor.RED));
 
-      HumanEntity humanEntity = event.getWhoClicked();
+            SoundUtils.playSound(humanEntity, Sound.BLOCK_NOTE_BLOCK_BASS, .5f, 1f);
 
-      if (currentSeconds < trade.getOffset()) {
-        Chat.sendMessage(humanEntity, Component.text(
-            "Dieser Trade ist noch nicht verfügbar",
-            NamedTextColor.RED
-        ));
+            return;
+          }
 
-        SoundUtils.playSound(humanEntity, Sound.BLOCK_NOTE_BLOCK_BASS, .5f, 1f);
-
-        return;
-      }
-
-      if (!trade.canPlayerUse(humanEntity.getUniqueId())) {
-        Chat.sendMessage(
-            humanEntity,
-            Component.text("Du hast diesen Trade bereits geöffnet", NamedTextColor.RED));
-
-        SoundUtils.playSound(humanEntity, Sound.BLOCK_NOTE_BLOCK_BASS, .5f, 1f);
-
-        return;
-      }
-
-      new DropGui(dropsGui, humanEntity, trade).show(humanEntity);
-    });
+          new DropGui(dropsGui, humanEntity, supplyTrade).show(humanEntity);
+        }
+    );
   }
 }
