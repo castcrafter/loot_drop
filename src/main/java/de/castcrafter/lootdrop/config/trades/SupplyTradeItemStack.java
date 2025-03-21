@@ -1,5 +1,8 @@
 package de.castcrafter.lootdrop.config.trades;
 
+import io.papermc.paper.datacomponent.DataComponentTypes;
+import io.papermc.paper.datacomponent.item.CustomModelData;
+import io.papermc.paper.datacomponent.item.DyedItemColor;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -17,6 +20,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.PotionMeta;
 import org.spongepowered.configurate.objectmapping.ConfigSerializable;
 
+@SuppressWarnings("UnstableApiUsage")
 @ConfigSerializable
 public class SupplyTradeItemStack {
 
@@ -27,7 +31,7 @@ public class SupplyTradeItemStack {
   private String displayName = null;
   private List<String> lore = null;
   private boolean unbreakable = false;
-  private Float customModelData = null;
+  private float customModelData = -1;
   private String leatherColor = null;
 
   private List<SupplyTradeItemStackEnchantment> enchantments = null;
@@ -149,8 +153,14 @@ public class SupplyTradeItemStack {
       itemMeta.setUnbreakable(true);
     }
 
-    if (customModelData != null) {
-      itemMeta.setCustomModelData(customModelData.intValue());
+    if (customModelData != -1) {
+      itemStack.setData(DataComponentTypes.CUSTOM_MODEL_DATA,
+          CustomModelData.customModelData().addFloat(customModelData).build());
+    }
+
+    if (leatherColor != null) {
+      Color colorHex = Color.fromRGB(Integer.parseInt(leatherColor, 16));
+      itemStack.setData(DataComponentTypes.DYED_COLOR, DyedItemColor.dyedItemColor(colorHex, true));
     }
 
     itemStack.setItemMeta(itemMeta);
