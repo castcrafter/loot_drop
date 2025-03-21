@@ -45,7 +45,7 @@ public class LarryNpc {
     npc.setProcessed(true);
 
     SkinDescriptor skinDescriptor = api.getSkinDescriptorFactory().createUrlDescriptor(
-        "https://www.minecraftskins.com/uploads/skins/2025/03/08/green-23105935.png?v778",
+        "https://www.minecraftskins.com/uploads/skins/2023/04/16/green-screen-man-21522853.png?v779",
         "slim"
     );
 

@@ -1,5 +1,6 @@
 package de.castcrafter.lootdrop.command.commands.drops;
 
+import de.castcrafter.lootdrop.command.commands.drops.subcommands.DropReloadCommand;
 import de.castcrafter.lootdrop.command.commands.drops.subcommands.DropResetCommand;
 import dev.jorel.commandapi.CommandAPICommand;
 
@@ -19,6 +20,7 @@ public class DropsCommand extends CommandAPICommand {
     withPermission("lootdrop.command.drops");
 
     withSubcommand(new DropResetCommand("reset"));
+    withSubcommand(new DropReloadCommand("reload"));
 
     executesPlayer((player, args) -> {
 //			new DropsGui(player).show(player);
