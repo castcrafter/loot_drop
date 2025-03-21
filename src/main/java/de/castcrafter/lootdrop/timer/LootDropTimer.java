@@ -12,6 +12,7 @@ import java.time.ZonedDateTime;
 import java.util.List;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.logger.slf4j.ComponentLogger;
 import org.bukkit.Bukkit;
 import org.bukkit.Sound;
@@ -38,9 +39,10 @@ public class LootDropTimer extends BukkitRunnable {
       LootDropConfig.INSTANCE.setLastLarryRespawn(currentTime);
       LarryNpc.updateLocation(LarrySpawns.getRandomLocation());
 
+      TextColor color = TextColor.fromHexString("#00FF40");
       for (Player player : Bukkit.getOnlinePlayers()) {
         Chat.sendMessage(player,
-            Component.text("Larry wurde an einem neuen Ort gesichtet!", NamedTextColor.GOLD));
+            Component.text("Larry wurde an einem neuen Ort gesichtet!", color));
         SoundUtils.playSound(player, Sound.ENTITY_CHICKEN_EGG, 1, 1);
       }
     }
