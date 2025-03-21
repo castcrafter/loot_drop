@@ -42,7 +42,7 @@ public class LarryNpc {
         new NpcLocation(spawnLocation)
     );
 
-    npc.setProcessed(true);
+    npc.enableEverything();
 
     SkinDescriptor skinDescriptor = api.getSkinDescriptorFactory().createUrlDescriptor(
         "https://www.minecraftskins.com/uploads/skins/2023/04/16/green-screen-man-21522853.png?v779",
