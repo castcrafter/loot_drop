@@ -38,7 +38,7 @@ public enum LarrySpawns {
       newLocation = values()[random.nextInt(values().length)].getLocation();
     } while (locationEquals(oldLocation, newLocation));
 
-    return newLocation;
+    return newLocation.add(0.5, 0, 0.5);
   }
 
   public Location getLocation() {
