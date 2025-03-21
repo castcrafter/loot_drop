@@ -11,7 +11,10 @@ public enum LarrySpawns {
   THREE(new Location(Bukkit.getWorlds().getFirst(), 75, 63, -1666)),
   FOUR(new Location(Bukkit.getWorlds().getFirst(), 947, 136, -606)),
   FIVE(new Location(Bukkit.getWorlds().getFirst(), 1294, 61, 942)),
-  SIX(new Location(Bukkit.getWorlds().getFirst(), -1784, 123, -1630));
+  SIX(new Location(Bukkit.getWorlds().getFirst(), -1784, 123, -1630)),
+  SEVEN(new Location(Bukkit.getWorlds().getFirst(), -314, 54, -218)),
+  EIGHT(new Location(Bukkit.getWorlds().getFirst(), -202, 94, 264)),
+  NINE(new Location(Bukkit.getWorlds().getFirst(), 373, 36, -388));
 
   private final Location location;
 
