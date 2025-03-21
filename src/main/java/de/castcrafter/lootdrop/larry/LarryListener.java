@@ -32,7 +32,12 @@ public class LarryListener implements Listener {
       return;
     }
 
-    Bukkit.getOnlinePlayers().forEach(it -> it.hidePlayer(Main.getInstance(), player));
+    if (player.hasPermission("lootdrop.bypass")) {
+      return;
+    }
+
+    Bukkit.getOnlinePlayers().stream().filter(online -> !online.hasPermission("lootdrop.bypass"))
+        .forEach(it -> it.hidePlayer(Main.getInstance(), player));
   }
 
   @EventHandler
