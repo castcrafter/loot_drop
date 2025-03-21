@@ -288,7 +288,7 @@ public class SpecialItemListener implements Listener {
         Component.text(itemStackDisplayName),
         Component.text("Gefunden durch: ")
             .append(player.displayName().colorIfAbsent(NamedTextColor.YELLOW)),
-        Times.times(Duration.ofMillis(250), Duration.ofSeconds(3), Duration.ofMillis(250))
+        Times.times(Duration.ofMillis(250), Duration.ofSeconds(10), Duration.ofMillis(250))
     );
 
     for (Player online : Bukkit.getOnlinePlayers()) {
