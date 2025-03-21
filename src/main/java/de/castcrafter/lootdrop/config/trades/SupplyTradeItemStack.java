@@ -28,6 +28,7 @@ public class SupplyTradeItemStack {
   private List<String> lore = null;
   private boolean unbreakable = false;
   private Float customModelData = null;
+  private String leatherColor = null;
 
   private List<SupplyTradeItemStackEnchantment> enchantments = null;
 
@@ -43,7 +44,8 @@ public class SupplyTradeItemStack {
       boolean unbreakable,
       String potionColor,
       List<SupplyTradeItemStackPotionEffect> potionEffects,
-      Float customModelData
+      Float customModelData,
+      String leatherColor
   ) {
     this.material = material;
     this.amount = amount;
@@ -143,7 +145,7 @@ public class SupplyTradeItemStack {
       }
     }
 
-    if (itemMeta != null && unbreakable) {
+    if (unbreakable) {
       itemMeta.setUnbreakable(true);
     }
 
