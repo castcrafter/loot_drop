@@ -54,7 +54,7 @@ public class SupplyTradeButton extends GuiItem {
     }
 
     itemMeta.displayName(
-        Component.text("" + index,
+        Component.text("Trade " + index,
             playerOpenedDrop ? NamedTextColor.RED : NamedTextColor.GREEN,
             TextDecoration.BOLD,
             TextDecoration.UNDERLINED
