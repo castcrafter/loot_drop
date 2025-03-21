@@ -157,7 +157,7 @@ public class SupplyTradeItemStack {
 
     itemStack.setItemMeta(itemMeta);
 
-    if (customModelData != -1) {
+    if (customModelData != -1f) {
       itemStack.setData(DataComponentTypes.CUSTOM_MODEL_DATA,
           CustomModelData.customModelData().addFloat(customModelData).build());
     }
