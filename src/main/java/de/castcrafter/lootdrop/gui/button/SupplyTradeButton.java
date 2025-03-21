@@ -26,7 +26,7 @@ public class SupplyTradeButton extends GuiItem {
 
   private static final ComponentLogger LOGGER = ComponentLogger.logger(SupplyTradeButton.class);
 
-  private static ItemStack formItemStack(Player forPlayer, SupplyTrade supplyTrade) {
+  private static ItemStack formItemStack(int index, Player forPlayer, SupplyTrade supplyTrade) {
     long secondsSinceStart = Duration.between(
         LootDropConfig.INSTANCE.getStartTimestamp(),
         ZonedDateTime.now()
@@ -45,18 +45,16 @@ public class SupplyTradeButton extends GuiItem {
       oraxenName = "icon_daily_gift_claimed";
     }
 
-    long offset = supplyTrade.getOffset();
-
     ItemStack itemStack = OraxenItems.getItemById(oraxenName).build().clone();
     ItemMeta itemMeta = itemStack.getItemMeta();
 
     if (itemMeta == null) {
-      LOGGER.error("ItemMeta is null for offset " + offset);
+      LOGGER.error("ItemMeta is null for index {}", index);
       return itemStack;
     }
 
     itemMeta.displayName(
-        Component.text("" + offset,
+        Component.text("" + index,
             playerOpenedDrop ? NamedTextColor.RED : NamedTextColor.GREEN,
             TextDecoration.BOLD,
             TextDecoration.UNDERLINED
@@ -71,9 +69,9 @@ public class SupplyTradeButton extends GuiItem {
       loreList.add(
           Component.text("Klicke hier, um", NamedTextColor.GRAY));
       loreList.add(
-          Component.text("die Belohnungen für", NamedTextColor.GRAY));
+          Component.text("die Belohnungen für Trade ", NamedTextColor.GRAY));
       loreList.add(
-          Component.text(offset + " zu öffnen", NamedTextColor.GRAY));
+          Component.text(index + " zu öffnen", NamedTextColor.GRAY));
     }
 
     itemMeta.lore(
@@ -84,8 +82,9 @@ public class SupplyTradeButton extends GuiItem {
     return itemStack;
   }
 
-  public SupplyTradeButton(DropsGui dropsGui, Player forPlayer, SupplyTrade supplyTrade) {
-    super(formItemStack(forPlayer, supplyTrade), event -> {
+  public SupplyTradeButton(int index, DropsGui dropsGui, Player forPlayer,
+      SupplyTrade supplyTrade) {
+    super(formItemStack(index, forPlayer, supplyTrade), event -> {
           long currentSeconds = Duration.between(
               LootDropConfig.INSTANCE.getStartTimestamp(),
               ZonedDateTime.now()

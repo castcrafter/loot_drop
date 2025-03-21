@@ -35,8 +35,9 @@ public class DropsGui extends ChestGui {
     List<GuiItem> items = new ArrayList<>();
     List<SupplyTrade> trades = LootDropConfig.INSTANCE.getTrades();
 
-    for (SupplyTrade supplyTrade : trades) {
-      items.add(getTradeGuiItem(supplyTrade));
+    for (int i = 0; i < trades.size(); i++) {
+      SupplyTrade trade = trades.get(i);
+      items.add(getTradeGuiItem(i, trade));
     }
 
     paginatedPane.populateWithGuiItems(items);
@@ -83,7 +84,7 @@ public class DropsGui extends ChestGui {
         new GuiItem(next));
   }
 
-  public GuiItem getTradeGuiItem(SupplyTrade supplyTrade) {
-    return new SupplyTradeButton(this, openedForPlayer, supplyTrade);
+  public GuiItem getTradeGuiItem(int index, SupplyTrade supplyTrade) {
+    return new SupplyTradeButton(index, this, openedForPlayer, supplyTrade);
   }
 }
