@@ -24,6 +24,14 @@ public class LarryNpc {
 
   private static NpcEntry npc;
 
+  public static void fetchLarry() {
+    NpcApi api = NpcApiProvider.get();
+    npc = api.getNpcRegistry().getById(NPC_ID);
+
+    currentLocation = npc.getNpc().getLocation().toBukkitLocation(npc.getNpc().getWorld());
+    updateBoundingBox();
+  }
+
   public static void spawn(Location spawnLocation) {
     if (npc != null) {
       return;
