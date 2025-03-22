@@ -70,9 +70,11 @@ public class ChestListener implements Listener {
 
       player.sendMessage(Component.text("Diese Kiste kann nicht abgebaut werden. Sei kein Arsch!",
           NamedTextColor.RED));
+      
+      return true;
     }
 
-    return true;
+    return false;
   }
 
   @EventHandler
