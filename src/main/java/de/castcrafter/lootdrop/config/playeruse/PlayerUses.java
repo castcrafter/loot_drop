@@ -1,5 +1,6 @@
 package de.castcrafter.lootdrop.config.playeruse;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import org.spongepowered.configurate.objectmapping.ConfigSerializable;
@@ -8,7 +9,7 @@ import org.spongepowered.configurate.objectmapping.ConfigSerializable;
 public class PlayerUses {
 
   private String recipeName;
-  private List<PlayerUse> uses;
+  private List<PlayerUse> uses = new ArrayList<>();
 
   public PlayerUses() {
   }
@@ -33,7 +34,11 @@ public class PlayerUses {
 
   public void increasePlayerUses(UUID uuid) {
     uses.stream().filter(playerUse -> playerUse.getUuid().equals(uuid)).findFirst()
-        .ifPresent(PlayerUse::increaseUses);
+        .orElseGet(() -> {
+          PlayerUse playerUse = new PlayerUse(uuid, 0);
+          uses.add(playerUse);
+          return playerUse;
+        }).increaseUses();
   }
 
   public int getPlayerUses(UUID uuid) {
