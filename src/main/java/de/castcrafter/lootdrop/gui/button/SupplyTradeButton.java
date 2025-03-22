@@ -54,7 +54,7 @@ public class SupplyTradeButton extends GuiItem {
     }
 
     itemMeta.displayName(
-        Component.text("Trade " + index,
+        Component.text(supplyTrade.getName(),
             playerOpenedDrop ? NamedTextColor.RED : NamedTextColor.GREEN,
             TextDecoration.BOLD,
             TextDecoration.UNDERLINED
@@ -69,9 +69,7 @@ public class SupplyTradeButton extends GuiItem {
       loreList.add(
           Component.text("Klicke hier, um", NamedTextColor.GRAY));
       loreList.add(
-          Component.text("die Belohnungen für Trade ", NamedTextColor.GRAY));
-      loreList.add(
-          Component.text(index + " zu öffnen", NamedTextColor.GRAY));
+          Component.text("zu traden.", NamedTextColor.GRAY));
     }
 
     itemMeta.lore(
