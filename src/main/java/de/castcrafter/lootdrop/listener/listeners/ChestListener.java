@@ -7,9 +7,12 @@ import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.block.Block;
 import org.bukkit.block.TileState;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.block.BlockExplodeEvent;
+import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.event.world.LootGenerateEvent;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
@@ -25,24 +28,35 @@ public class ChestListener implements Listener {
 
   @EventHandler
   public void onBlockBreak(BlockBreakEvent event) {
-    Block block = event.getBlock();
+    event.setCancelled(checkBlock(event.getBlock(), event.getPlayer()));
+  }
 
+  @EventHandler
+  public void onEntityExplode(EntityExplodeEvent event) {
+    event.blockList().removeIf(block -> checkBlock(block, null));
+  }
+
+  @EventHandler
+  public void onBlockExplode(BlockExplodeEvent event) {
+    event.blockList().removeIf(block -> checkBlock(block, null));
+  }
+
+  private boolean checkBlock(Block block, Player player) {
     if (!Arrays.asList(CHEST_TYPES).contains(block.getType())) {
-      return;
+      return false;
     }
 
     if (!(block.getState() instanceof TileState tileState)) {
-      return;
+      return false;
     }
 
     PersistentDataContainer pdc = tileState.getPersistentDataContainer();
-    if (pdc.has(LOOT_KEY, PersistentDataType.BOOLEAN)) {
-      event.setCancelled(true);
-
-      event.getPlayer()
-          .sendMessage(Component.text("Diese Kiste kann nicht abgebaut werden. Sei kein Arsch!",
-              NamedTextColor.RED));
+    if (pdc.has(LOOT_KEY, PersistentDataType.BOOLEAN) && player != null) {
+      player.sendMessage(Component.text("Diese Kiste kann nicht abgebaut werden. Sei kein Arsch!",
+          NamedTextColor.RED));
     }
+
+    return true;
   }
 
   @EventHandler
