@@ -1,5 +1,6 @@
 package de.castcrafter.lootdrop.command;
 
+import de.castcrafter.lootdrop.command.commands.LiegeWieCommand;
 import de.castcrafter.lootdrop.command.commands.MakeSpecialCommand;
 import de.castcrafter.lootdrop.command.commands.RenameCommand;
 import de.castcrafter.lootdrop.command.commands.drops.DropsCommand;
@@ -30,6 +31,7 @@ public class CommandManager {
     this.commands.add(new EventCommand("event"));
     this.commands.add(new SubEventJoinCommand("join", SubEventCommand.INSTANCE));
     this.commands.add(new RenameCommand("rename"));
+    this.commands.add(new LiegeWieCommand("liegewie"));
   }
 
   /**
