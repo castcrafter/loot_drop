@@ -6,6 +6,8 @@ import lol.pyr.znpcsplus.api.npc.NpcEntry;
 import lol.pyr.znpcsplus.api.npc.NpcType;
 import lol.pyr.znpcsplus.api.skin.SkinDescriptor;
 import lol.pyr.znpcsplus.util.NpcLocation;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.TextColor;
 import org.bukkit.Location;
 import org.bukkit.util.BoundingBox;
 
@@ -17,7 +19,8 @@ public class LarryNpc {
   public static BoundingBox hideBoundingBox = null;
 
   private static final String NPC_ID = "larry";
-  private static final String NPC_NAME = "Larry";
+  private static final Component NPC_NAME = Component.text("Larry",
+      TextColor.fromHexString("#00FF40"));
 
   private static NpcEntry npc;
 
@@ -55,7 +58,7 @@ public class LarryNpc {
     );
 
     npc.getNpc().setProperty(
-        api.getPropertyRegistry().getByName("name", String.class),
+        api.getPropertyRegistry().getByName("name", Component.class),
         NPC_NAME
     );
 
