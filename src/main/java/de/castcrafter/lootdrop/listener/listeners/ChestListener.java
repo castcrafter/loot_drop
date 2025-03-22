@@ -40,6 +40,7 @@ public class ChestListener implements Listener {
 
   @EventHandler
   public void onEntityExplode(EntityExplodeEvent event) {
+    // TODO: fix wither
     event.blockList().removeIf(block -> checkBlock(block, null, false));
   }
 
@@ -70,7 +71,7 @@ public class ChestListener implements Listener {
 
       player.sendMessage(Component.text("Diese Kiste kann nicht abgebaut werden. Sei kein Arsch!",
           NamedTextColor.RED));
-      
+
       return true;
     }
 
