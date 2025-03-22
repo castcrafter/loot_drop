@@ -2,6 +2,7 @@ package de.castcrafter.lootdrop;
 
 import de.castcrafter.lootdrop.command.CommandManager;
 import de.castcrafter.lootdrop.config.LootDropConfig;
+import de.castcrafter.lootdrop.config.playeruse.PlayerUseConfig;
 import de.castcrafter.lootdrop.listener.ListenerManager;
 import de.castcrafter.lootdrop.placeholder.LootDropPlaceholderExpansion;
 import java.security.NoSuchAlgorithmException;
@@ -30,6 +31,7 @@ public class Main extends JavaPlugin {
     }
 
     LootDropConfig.INSTANCE.loadConfig();
+    PlayerUseConfig.INSTANCE.loadConfig();
 
     commandManager = new CommandManager();
     listenerManager = new ListenerManager();
