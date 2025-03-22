@@ -1,6 +1,7 @@
 package de.castcrafter.lootdrop.listener.listeners;
 
 import java.util.Arrays;
+import me.angeschossen.chestprotect.api.events.ProtectionPreCreationEvent;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Material;
@@ -27,21 +28,27 @@ public class ChestListener implements Listener {
   };
 
   @EventHandler
+  public void onChestLock(ProtectionPreCreationEvent event) {
+    event.setCancelled(
+        checkBlock(event.getLocation().getBlock(), event.getPlayer().getPlayer(), true));
+  }
+
+  @EventHandler
   public void onBlockBreak(BlockBreakEvent event) {
-    event.setCancelled(checkBlock(event.getBlock(), event.getPlayer()));
+    event.setCancelled(checkBlock(event.getBlock(), event.getPlayer(), false));
   }
 
   @EventHandler
   public void onEntityExplode(EntityExplodeEvent event) {
-    event.blockList().removeIf(block -> checkBlock(block, null));
+    event.blockList().removeIf(block -> checkBlock(block, null, false));
   }
 
   @EventHandler
   public void onBlockExplode(BlockExplodeEvent event) {
-    event.blockList().removeIf(block -> checkBlock(block, null));
+    event.blockList().removeIf(block -> checkBlock(block, null, false));
   }
 
-  private boolean checkBlock(Block block, Player player) {
+  private boolean checkBlock(Block block, Player player, boolean placed) {
     if (!Arrays.asList(CHEST_TYPES).contains(block.getType())) {
       return false;
     }
@@ -52,6 +59,15 @@ public class ChestListener implements Listener {
 
     PersistentDataContainer pdc = tileState.getPersistentDataContainer();
     if (pdc.has(LOOT_KEY, PersistentDataType.BOOLEAN) && player != null) {
+      if (placed) {
+        player.sendMessage(
+            Component.text("Diese Kiste kann nicht protected werden. Sei kein Arsch!",
+                NamedTextColor.RED)
+        );
+
+        return true;
+      }
+
       player.sendMessage(Component.text("Diese Kiste kann nicht abgebaut werden. Sei kein Arsch!",
           NamedTextColor.RED));
     }

@@ -11,7 +11,7 @@ plugins {
 
 repositories {
     mavenCentral()
-    
+
     maven("https://repo.slne.dev/repository/maven-public/")
 }
 
@@ -24,6 +24,7 @@ dependencies {
     compileOnlyApi(libs.betterhud.bukkit)
     compileOnlyApi(libs.betterhud.commands)
     compileOnlyApi(libs.znpc)
+    compileOnlyApi(libs.chestprotect)
 
     api(libs.inventory.framework)
     api(libs.configurate.core)
