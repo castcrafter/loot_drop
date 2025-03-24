@@ -35,6 +35,10 @@ public class ChestListener implements Listener {
 
   @EventHandler
   public void onBlockBreak(BlockBreakEvent event) {
+    if (!(event.getBlock().getState() instanceof TileState tileState)) {
+      return;
+    }
+
     event.setCancelled(checkBlock(event.getBlock(), event.getPlayer(), false));
   }
 
